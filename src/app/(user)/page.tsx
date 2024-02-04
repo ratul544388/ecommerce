@@ -2,6 +2,7 @@ import { Hero } from "@/components/hero";
 import { MainCategories } from "./_components/main-categories";
 import { NewArrival } from "./_components/new-arrival";
 import { AboutOurCloth } from "./_components/about-our-cloth";
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
