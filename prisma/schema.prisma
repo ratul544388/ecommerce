@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String  @unique
+  name     String
+  email    String  @unique
+  imageUrl String
+  isAdmin  Boolean @default(false)
+
+  createdAt DateTime   @default(now())
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  quantity Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+}
+
+model Product {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  slug String @unique
+
+  quantity   Int
+  price      Float
+  offerPrice Float?
+
+  photos   String[]
+  category String
+
+  description String
+
+  createdAt DateTime @default(now())
+
+  variants  Variant[]
+  cartItems CartItem[]
+}
+
+model Variant {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  photo      String?
+  price      Float
+  offerPrice Float?
+  size       String?
+  color      String?
+  colorHex   String?
+  quantity   Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+}
+
+model Category {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String @unique
+
+  subCategories String[]
+}
+
+model Color {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  hexCode String @unique
+  name    String @unique
+}
+
+model Size {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  value String @unique
+}
