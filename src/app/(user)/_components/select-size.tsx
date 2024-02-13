@@ -12,18 +12,6 @@ interface SelectVariantProps {
 export const SelectSize = ({ sizes }: SelectVariantProps) => {
   const [value, setValue] = useState<string>();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  useEffect(() => {
-    const query = qs.parse(searchParams.toString());
-    const url = qs.stringifyUrl({
-      url: pathname,
-      query,
-    });
-
-    router.push(url);
-  }, [value, pathname, searchParams, router]);
 
   const handleClick = (size: string) => {
     setValue(size);
