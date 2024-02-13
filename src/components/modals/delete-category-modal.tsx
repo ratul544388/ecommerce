@@ -11,16 +11,17 @@ import { Button } from "../ui/button";
 export const DeleteCategoryModal = () => {
   const { isOpen, type, data, onClose } = useModal();
   const open = isOpen && type === "deleteCategoryModal";
-  const { category } = data;
+  const { ids, title, onSuccess } = data;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   function onDelete() {
     startTransition(() => {
-      deleteCategory(category?.id as string).then(({ error, success }) => {
+      deleteCategory(ids as string[]).then(({ error, success }) => {
         if (success) {
           onClose();
           toast.success(success);
+          onSuccess?.();
           router.refresh();
         } else {
           toast.error(error);
@@ -32,9 +33,10 @@ export const DeleteCategoryModal = () => {
   return (
     <Modal
       open={open}
-      title="Delete Category"
+      title={title}
       description="Are you sure you want to Delete the Category? This action cannot be undone."
       disabled={isPending}
+      className="max-w-[400px]"
     >
       <div className="mt-5 flex items-center gap-3 justify-end">
         <Button onClick={onClose} disabled={isPending} variant="ghost">

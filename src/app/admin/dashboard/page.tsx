@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SizePage = () => {
+const DashboardPage = () => {
   return (
     <div>
       
@@ -8,4 +8,4 @@ const SizePage = () => {
   )
 }
 
-export default SizePage
+export default DashboardPage

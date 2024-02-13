@@ -6,13 +6,15 @@ import { X } from "lucide-react";
 import { animate, motion, useAnimation } from "framer-motion";
 import { useModal } from "@/hooks/use-modal-store";
 import { ScrollArea } from "../ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 interface ModalProps {
   open: boolean;
   children: ReactNode;
-  title: string;
+  title?: string;
   description?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export const Modal = ({
@@ -21,6 +23,7 @@ export const Modal = ({
   description,
   open,
   disabled,
+  className,
 }: ModalProps) => {
   const { onClose } = useModal();
 
@@ -47,7 +50,7 @@ export const Modal = ({
           display: "none",
           opacity: 0,
           transition: {
-            delay: 0.1,
+            delay: 0.15,
           },
         },
         visible: { display: "flex", opacity: 1 },
@@ -62,8 +65,8 @@ export const Modal = ({
       <motion.div
         onClick={(e) => e.stopPropagation()}
         variants={{
-          hidden: { y: 200, scale: 0.5 },
-          visible: { y: 0, scale: 1 },
+          hidden: { scale: 0.5, opacity: 0 },
+          visible: { scale: 1, opacity: 1 },
         }}
         transition={{
           type: "tween",
@@ -71,7 +74,10 @@ export const Modal = ({
         }}
         initial="hidden"
         animate={animation}
-        className="relative bg-background border rounded-lg w-full max-w-[500px]"
+        className={cn(
+          "relative h-[100svh] sm:h-auto sm:max-h-[80vh] overflow-y-auto bg-background border rounded-lg w-full max-w-[500px]",
+          className
+        )}
       >
         <Button
           onClick={handleClose}
@@ -82,13 +88,13 @@ export const Modal = ({
         >
           <X className="h-5 w-5 text-muted-foreground" />
         </Button>
-        <ScrollArea className="h-[90vh]">
+        <div className="max-h-[90vh]">
           <div className="p-5">
             <h1 className="font-semibold text-lg">{title}</h1>
             <p className="text-sm text-muted-foreground">{description}</p>
             <div className="mt-5">{children}</div>
           </div>
-        </ScrollArea>
+        </div>
       </motion.div>
     </motion.div>
   );

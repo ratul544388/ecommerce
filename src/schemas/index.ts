@@ -5,7 +5,7 @@ export const ProductSchema = z.object({
     .string()
     .min(3, { message: "Name is too short" })
     .max(100, { message: "Name is too long" }),
-  category: z.string({ required_error: "Category is required" }),
+  categories: z.array(z.string()).min(1, { message: "Category is required" }),
   photos: z.array(z.string()).min(0, {
     message: "Minimum one photo is required",
   }),
@@ -18,14 +18,18 @@ export const ProductSchema = z.object({
 });
 
 export const variantSchema = z.object({
-  color: z.object({
-    name: z.string().optional(),
-    hex: z.string().optional(),
-  }),
+  color: z
+    .object({
+      name: z.string(),
+      hex: z.string(),
+    })
+    .optional(),
   size: z.string().optional(),
   photo: z.string().optional(),
-  quantity: z.coerce.number(),
-  price: z.coerce.number(),
+  quantity: z.coerce
+    .number({ invalid_type_error: "Quantity is required" })
+    .min(1, { message: "Quantity is required" }),
+  price: z.coerce.number().optional(),
   offerPrice: z.coerce.number().optional(),
 });
 
@@ -36,6 +40,13 @@ export const CategorySchema = z.object({
     .max(20, { message: "Category is too long" }),
 });
 
+export const SizeSchema = z.object({
+  title: z
+    .string()
+    .min(1, { message: "Size is required" })
+    .max(20, { message: "Size is too long" }),
+});
+
 export const ColorSchema = z.object({
   name: z
     .string()
@@ -43,3 +54,4 @@ export const ColorSchema = z.object({
     .max(20, { message: "Color name is too long" }),
   hexCode: z.string().min(1, { message: "Hex code is required" }),
 });
+

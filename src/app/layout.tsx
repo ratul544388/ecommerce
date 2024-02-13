@@ -23,9 +23,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={cn(inter.className, "transition flex flex-col")}>
-          {children}
+          <main className="flex-1">{children}</main>
           <ModalProvider />
           <ToastProvider />
+          Hello world
         </body>
       </html>
     </ClerkProvider>

@@ -15,20 +15,9 @@ model User {
   imageUrl String
   isAdmin  Boolean @default(false)
 
-  createdAt DateTime   @default(now())
-  cartItems CartItem[]
-}
-
-model CartItem {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @db.ObjectId
-
-  quantity Int
-
-  product   Product @relation(fields: [productId], references: [id])
-  productId String  @db.ObjectId
+  createdAt DateTime @default(now())
+  cart      String[]
+  wishList  String[]
 }
 
 model Product {
@@ -40,22 +29,21 @@ model Product {
   price      Float
   offerPrice Float?
 
-  photos   String[]
-  category String
+  photos     String[]
+  categories String[]
 
   description String
 
   createdAt DateTime @default(now())
 
-  variants  Variant[]
-  cartItems CartItem[]
+  variants Variant[]
 }
 
 model Variant {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
   photo      String?
-  price      Float
+  price      Float?
   offerPrice Float?
   size       String?
   color      String?
@@ -69,8 +57,6 @@ model Variant {
 model Category {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String @unique
-
-  subCategories String[]
 }
 
 model Color {
@@ -81,7 +67,6 @@ model Color {
 }
 
 model Size {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  value String @unique
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  title String @unique
 }

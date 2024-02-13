@@ -1,7 +1,5 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
+import { StaticBluredImage } from "./static-blured-photo";
 
 interface HeroProps {
   image?: string;
@@ -9,15 +7,11 @@ interface HeroProps {
 
 export const Hero = ({}: HeroProps) => {
   return (
-    <div className="h-[50vh] relative">
-      <Link href="/">
-        <Image
-          src="/images/hero.jpg"
-          alt="hero"
-          className="object-cover"
-          fill
-        />
-      </Link>
-    </div>
+    <Link href="/" className="absolute w-full inset-0 top-[70px]">
+      <StaticBluredImage
+        image="/images/hero.jpg"
+        className="max-w-full h-[50vh] rounded-none"
+      />
+    </Link>
   );
 };

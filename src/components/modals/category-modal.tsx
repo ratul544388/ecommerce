@@ -8,10 +8,10 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Modal } from "./modal";
 
+import { createCategory, updateCategory } from "@/actions/category-action";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,10 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CategorySchema } from "@/schemas";
-import { useTransition } from "react";
-import { createCategory } from "@/actions/category-action";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useEffect, useTransition } from "react";
+import { toast } from "sonner";
 
 interface CategoryModalProps {}
 
@@ -32,7 +31,7 @@ export const CategoryModal = ({}: CategoryModalProps) => {
   const [isPending, startTransition] = useTransition();
   const open = isOpen && type === "categoryModal";
 
-  const { category } = data;
+  const { category, title } = data;
 
   const form = useForm<z.infer<typeof CategorySchema>>({
     resolver: zodResolver(CategorySchema),
@@ -41,10 +40,29 @@ export const CategoryModal = ({}: CategoryModalProps) => {
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      title: category?.title,
+    });
+  }, [category, form, isOpen]);
+
   function onSubmit(values: z.infer<typeof CategorySchema>) {
     startTransition(() => {
-      createCategory({ values, categoryId: category?.id }).then(
-        ({ error, success }) => {
+      if (category) {
+        updateCategory({ values, categoryId: category?.id }).then(
+          ({ error, success }) => {
+            if (success) {
+              form.reset();
+              onClose();
+              toast.success(success);
+              router.refresh();
+            } else {
+              toast.error(error);
+            }
+          }
+        );
+      } else {
+        createCategory({ values }).then(({ error, success }) => {
           if (success) {
             form.reset();
             onClose();
@@ -53,13 +71,17 @@ export const CategoryModal = ({}: CategoryModalProps) => {
           } else {
             toast.error(error);
           }
-        }
-      );
+        });
+      }
     });
   }
 
   return (
-    <Modal open={open} title="Create a New Category" disabled={isPending}>
+    <Modal
+      open={open}
+      title={title || "Create a New Category"}
+      disabled={isPending}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -83,7 +105,7 @@ export const CategoryModal = ({}: CategoryModalProps) => {
             )}
           />
           <Button disabled={isPending} type="submit" className="ml-auto">
-            Create
+            {category ? "Save" : "Create"}
           </Button>
         </form>
       </Form>

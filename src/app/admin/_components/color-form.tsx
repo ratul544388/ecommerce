@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { createColor } from "@/actions/color-action";
+import { createColor } from "@/actions/colors-action";
 import { Button } from "@/components/ui/button";
 import {
     Form,

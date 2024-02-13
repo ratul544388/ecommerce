@@ -21,9 +21,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { ColorSchema } from "@/schemas";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
-import { createColor } from "@/actions/color-action";
+import { createColor, updateColor } from "@/actions/colors-action";
 
 interface ColorModalProps {}
 
@@ -33,7 +33,7 @@ export const ColorModal = ({}: ColorModalProps) => {
   const [isPending, startTransition] = useTransition();
   const open = isOpen && type === "colorModal";
 
-  const { category } = data;
+  const { color, title } = data;
 
   const form = useForm<z.infer<typeof ColorSchema>>({
     resolver: zodResolver(ColorSchema),
@@ -43,10 +43,30 @@ export const ColorModal = ({}: ColorModalProps) => {
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      name: color?.name,
+      hexCode: color?.hexCode,
+    });
+  }, [form, color]);
+
   function onSubmit(values: z.infer<typeof ColorSchema>) {
     startTransition(() => {
-      createColor(values).then(
-        ({ error, success }) => {
+      if (color) {
+        updateColor({ values, colorId: color?.id }).then(
+          ({ error, success }) => {
+            if (success) {
+              form.reset();
+              onClose();
+              toast.success(success);
+              router.refresh();
+            } else {
+              toast.error(error);
+            }
+          }
+        );
+      } else {
+        createColor(values).then(({ error, success }) => {
           if (success) {
             form.reset();
             onClose();
@@ -55,15 +75,19 @@ export const ColorModal = ({}: ColorModalProps) => {
           } else {
             toast.error(error);
           }
-        }
-      );
+        });
+      }
     });
   }
 
   const hexCode = form.getValues("hexCode");
 
   return (
-    <Modal open={open} title="Create a new Color" disabled={isPending}>
+    <Modal
+      open={open}
+      title={title || "Create a new Color"}
+      disabled={isPending}
+    >
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -116,7 +140,7 @@ export const ColorModal = ({}: ColorModalProps) => {
             )}
           />
           <Button disabled={isPending} type="submit" className="ml-auto">
-            Create
+            {color ? "Save" : "Create"}
           </Button>
         </form>
       </Form>

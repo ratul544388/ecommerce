@@ -21,12 +21,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Category, Color, Product, Size, Variant } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
 import { ProductVariantForm } from "./product-variant-form";
 import { ImageUpload } from "./image-upload";
 import { ImagesPreview } from "@/components/images-preview";
+import { VariantInfo } from "./variant-info";
+import { cn } from "@/lib/utils";
 
 interface ProductFormProps {
   categories: Category[];
@@ -45,6 +47,9 @@ export const ProductForm = ({
 }: ProductFormProps) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const form = useForm<z.infer<typeof ProductSchema>>({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
@@ -52,7 +57,7 @@ export const ProductForm = ({
       price: undefined,
       offerPrice: undefined,
       quantity: undefined,
-      category: "",
+      categories: [],
       photos: [],
       description: "",
     },
@@ -63,7 +68,7 @@ export const ProductForm = ({
       const {
         name,
         photos,
-        category,
+        categories,
         description,
         price,
         offerPrice,
@@ -72,7 +77,7 @@ export const ProductForm = ({
       form.reset({
         name,
         photos,
-        category,
+        categories,
         description,
         price,
         offerPrice: offerPrice || undefined,
@@ -88,7 +93,7 @@ export const ProductForm = ({
           ({ success, error }) => {
             if (success) {
               toast.success(success);
-              // router.push(`/admin/products`);
+              router.push(`/admin/products`);
               router.refresh();
             } else if (error) {
               toast.error(error);
@@ -136,15 +141,15 @@ export const ProductForm = ({
           />
           <FormField
             control={form.control}
-            name="category"
+            name="categories"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
                   <CategorySelect
-                    categories={categories}
                     value={field.value}
                     onChange={field.onChange}
+                    options={categories.map((item) => item.title)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -159,7 +164,6 @@ export const ProductForm = ({
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
-                    autoFocus={!!!product}
                     placeholder="Enter Product price"
                     {...field}
                     type="number"
@@ -177,7 +181,6 @@ export const ProductForm = ({
                 <FormLabel>Offer Price</FormLabel>
                 <FormControl>
                   <Input
-                    autoFocus={!!!product}
                     placeholder="Enter Product Offer Price"
                     {...field}
                     type="number"
@@ -195,7 +198,6 @@ export const ProductForm = ({
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
                   <Input
-                    autoFocus={!!!product}
                     placeholder="Enter Product Quantity"
                     {...field}
                     type="number"
@@ -205,61 +207,95 @@ export const ProductForm = ({
               </FormItem>
             )}
           />
-          <div className="flex items-center flex-wrap gap-3">
-            <ImagesPreview
-              images={photos}
-              onRemove={(value) =>
-                form.setValue("photos", value, { shouldValidate: true })
-              }
-            />
-            <FormField
-              control={form.control}
-              name="photos"
-              render={({}) => (
-                <FormItem className="md:col-span-2">
-                  <FormLabel>Product Photos</FormLabel>
-                  <FormControl>
-                    <ImageUpload
-                      onUpload={(value) => {
-                        form.setValue("photos", [...photos, value], {
-                          shouldValidate: true,
-                        });
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="space-y-3">
+            <label className="text-sm font-medium">Product Photos</label>
+            <div className="flex items-center flex-wrap gap-3">
+              <ImagesPreview
+                images={photos}
+                onRemove={(value) =>
+                  form.setValue("photos", value, { shouldValidate: true })
+                }
+              />
+              <FormField
+                control={form.control}
+                name="photos"
+                render={({}) => (
+                  <FormItem className="md:col-span-2">
+                    <FormControl>
+                      <ImageUpload
+                        onUpload={(value) => {
+                          form.setValue("photos", [...photos, value], {
+                            shouldValidate: true,
+                          });
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
-          {colors && sizes && (
-            <div className="space-y-8 md:col-span-2">
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Input
+                    autoFocus={!!!product}
+                    placeholder="Enter new Product Description"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {product && colors && sizes && (
+            <div className="flex flex-col gap-8 md:col-span-2">
               <div className="space-y-3">
                 <h1 className="font-semibold text-xl text-primary">
                   Product Variants
                 </h1>
                 <Separator />
               </div>
-              {product && (
-                <div className="space-y-5">
-                  {product.variants.map((variant) => (
-                    <ProductVariantForm
-                      colors={colors}
-                      sizes={sizes}
-                      variant={variant}
-                      productId={product.id}
-                      key={variant.id}
-                      initialType="preview"
-                    />
-                  ))}
-                  <ProductVariantForm
+              <div className="space-y-3">
+                {product?.variants.map((item) => (
+                  <VariantInfo
+                    productId={product.id}
+                    key={item.id}
+                    variant={item}
                     colors={colors}
                     sizes={sizes}
-                    productId={product.id}
-                    initialType={product.variants.length ? "button" : "form"}
                   />
-                </div>
+                ))}
+              </div>
+              {searchParams.get("add_a_new_product_variant") === "true" && (
+                <ProductVariantForm
+                  productId={product.id}
+                  colors={colors}
+                  sizes={sizes}
+                />
               )}
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() =>
+                  router.push(`${pathname}?add_a_new_product_variant=true`, {
+                    scroll: false,
+                  })
+                }
+                className={cn(
+                  "ml-auto text-white bg-green-600 hover:bg-green-600/90 hover:text-white",
+                  (searchParams.get("editing_variant") ||
+                    searchParams.get("add_a_new_product_variant") === "true") &&
+                    "hidden"
+                )}
+              >
+                Add Product Variant
+              </Button>
               <Separator />
             </div>
           )}

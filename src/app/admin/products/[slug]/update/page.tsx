@@ -14,13 +14,13 @@ const ProductUpdatePage = async ({ params }: { params: { slug: string } }) => {
       variants: true,
     },
   });
-
-  const categories = await getCategories();
-
+  
+  
   if (!product) {
     notFound();
   }
-
+  
+  const categories = await getCategories();
   const colors = await db.color.findMany();
   const sizes = await db.size.findMany();
 
