@@ -12,9 +12,11 @@ interface SelectVariantProps {
 export const SelectSize = ({ sizes }: SelectVariantProps) => {
   const [value, setValue] = useState<string>();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
 
   const handleClick = (size: string) => {
-    setValue(size);
+    router.push(`${pathname}?size$${size.toLowerCase()}`);
   };
 
   return (
@@ -25,7 +27,6 @@ export const SelectSize = ({ sizes }: SelectVariantProps) => {
           <Button
             onClick={() => handleClick(size)}
             variant={
-              value === size ||
               searchParams.get("size") === value?.toLowerCase()
                 ? "ordinary"
                 : "outline"
