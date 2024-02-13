@@ -9,9 +9,9 @@ export default function Home() {
     <div className="h-full space-y-4 pb-10">
       <Hero />
       <div className="h-full space-y-4 pt-[50vh]">
-        <MainCategories />
+        {/* <MainCategories /> */}
         <div className="max-w-screen-lg px-5 mx-auto space-y-5">
-          <NewArrival />
+          {/* <NewArrival /> */}
           <AboutOurCloth />
         </div>
       </div>
