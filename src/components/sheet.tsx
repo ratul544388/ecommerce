@@ -1,25 +1,28 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { useSheetStore } from "@/hooks/use-sheet-store";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
 import { ReactNode, useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
 
 export const Sheet = ({
   children,
-  trigger,
   className,
+  open,
+  side = "left",
 }: {
   children: ReactNode;
-  trigger: ReactNode;
   className?: string;
+  open: boolean;
+  side?: "left" | "right";
 }) => {
-  const animation = useAnimation();
+  const { onClose } = useSheetStore();
 
   const handleClose = useCallback(() => {
-    animation.start("hidden");
-  }, [animation]);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -34,71 +37,72 @@ export const Sheet = ({
     };
   }, [handleClose]);
 
+  const animate = open ? "visible" : "hidden";
+
   return (
-    <div className="md:hidden">
-      <Button
-        onClick={() => animation.start("visible")}
-        variant="ghost"
-        size="icon"
-      >
-        {trigger}
-      </Button>
-      <motion.div
+    <motion.div
+      variants={{
+        hidden: {
+          display: "none",
+          opacity: 0,
+          transition: { delay: 0.3 },
+        },
+        visible: { opacity: 1, display: "block" },
+      }}
+      onClick={handleClose}
+      initial="hidden"
+      animate={animate}
+      className="bg-neutral-900/20 backdrop-blur-sm fixed inset-0 z-50 py-5 px-6"
+    >
+      <motion.aside
+        onClick={(e) => e.stopPropagation()}
         variants={{
           hidden: {
-            display: "none",
-            opacity: 0,
-            transition: { delay: 0.3 },
+            ...(side === "left"
+              ? {
+                  left: 0,
+                  x: "-100%",
+                }
+              : {
+                  right: 0,
+                  x: "100%",
+                }),
           },
-          visible: { opacity: 1, display: "block" },
+          visible: {
+            x: 0,
+          },
         }}
-        onClick={handleClose}
         initial="hidden"
-        animate={animation}
-        className="bg-neutral-900/20 backdrop-blur-sm fixed inset-0 z-50 py-5 px-6"
+        animate={animate}
+        transition={{
+          type: "tween",
+        }}
+        className={cn(
+          "fixed bg-background w-[75vw] overflow-hidden border-r inset-y-0 max-w-[400px] top-0 px-6 py-5 flex flex-col",
+          className
+        )}
       >
-        <motion.aside
-          onClick={(e) => e.stopPropagation()}
+        <motion.div
+          className="absolute right-1 top-1"
           variants={{
-            hidden: {
-              x: "-100%",
-            },
-            visible: {
-              x: 0,
-            },
+            hidden: { scale: 0 },
+            visible: { scale: 1, transition: { delay: 0.4 } },
           }}
           initial="hidden"
-          animate={animation}
-          transition={{
-            type: "tween",
-          }}
-          className={cn(
-            "fixed bg-background w-[75vw] overflow-hidden border-r inset-y-0 max-w-[400px] top-0 left-0 px-6 py-5",
-            className
-          )}
+          animate={animate}
         >
-          <motion.div
-            className="absolute right-1 top-1"
-            variants={{
-              hidden: { scale: 0 },
-              visible: { scale: 1, transition: { delay: 0.4 } },
-            }}
-            initial="hidden"
-            animate={animation}
-          >
-            <Button onClick={handleClose} variant="ghost" size="icon">
-              <X className="h-6 w-6 text-muted-foreground" />
-            </Button>
-          </motion.div>
-          <motion.div
-            variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
-            initial="hidden"
-            animate={animation}
-          >
-            {children}
-          </motion.div>
-        </motion.aside>
-      </motion.div>
-    </div>
+          <Button onClick={handleClose} variant="ghost" size="icon">
+            <X className="h-6 w-6 text-muted-foreground" />
+          </Button>
+        </motion.div>
+        <motion.div
+          variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
+          initial="hidden"
+          animate={animate}
+        >
+          {children}
+        </motion.div>
+      </motion.aside>
+    </motion.div>
   );
 };

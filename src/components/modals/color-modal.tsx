@@ -9,7 +9,7 @@ import { z } from "zod";
 import { Button } from "../ui/button";
 import { Modal } from "./modal";
 
-import { createCategory } from "@/actions/category-action";
+import { createColor, updateColor } from "@/actions/colors-action";
 import {
   Form,
   FormControl,
@@ -23,7 +23,6 @@ import { ColorSchema } from "@/schemas";
 import { useRouter } from "next/navigation";
 import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
-import { createColor, updateColor } from "@/actions/colors-action";
 
 interface ColorModalProps {}
 
@@ -39,14 +38,14 @@ export const ColorModal = ({}: ColorModalProps) => {
     resolver: zodResolver(ColorSchema),
     defaultValues: {
       name: "",
-      hexCode: "#333333",
+      hex: "#333333",
     },
   });
 
   useEffect(() => {
     form.reset({
       name: color?.name,
-      hexCode: color?.hexCode,
+      hex: color?.hex,
     });
   }, [form, color]);
 
@@ -80,7 +79,7 @@ export const ColorModal = ({}: ColorModalProps) => {
     });
   }
 
-  const hexCode = form.getValues("hexCode");
+  const hex = form.getValues("hex");
 
   return (
     <Modal
@@ -95,14 +94,14 @@ export const ColorModal = ({}: ColorModalProps) => {
         >
           <SketchPicker
             className="mx-auto"
-            color={hexCode}
+            color={hex}
             onChangeComplete={(value) =>
-              form.setValue("hexCode", value.hex, { shouldValidate: true })
+              form.setValue("hex", value.hex, { shouldValidate: true })
             }
           />
           <FormField
             control={form.control}
-            name="hexCode"
+            name="hex"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Hex Code</FormLabel>
@@ -112,7 +111,7 @@ export const ColorModal = ({}: ColorModalProps) => {
                     placeholder="Enter color hex code"
                     value={field.value}
                     onChange={(e) =>
-                      form.setValue("hexCode", e.target.value, {
+                      form.setValue("hex", e.target.value, {
                         shouldValidate: true,
                       })
                     }

@@ -7,9 +7,8 @@ import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import { AddToCart } from "../../_components/add-to-cart";
 import { HeartButton } from "../../_components/heart-button";
-import { SelectSize } from "../../_components/select-size";
 import { SelectColor } from "../../_components/select-color";
-import { Color } from "@prisma/client";
+import { SelectSize } from "../../_components/select-size";
 
 const ProductPage = async ({ params }: { params: { slug: string } }) => {
   const user = await currentUser();
@@ -31,14 +30,18 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     .map((item) => item.size) as string[];
 
   const colors = product.variants
-    .filter((variant) => variant.color)
+    .filter(
+      (variant, index, self) =>
+        variant.color &&
+        index === self.findIndex((i) => i.color[0] === variant.color[0])
+    )
     .map((item) => ({
-      name: item.color as string,
-      hexCode: item.colorHex as string,
+      name: item.color[0],
+      hex: item.color[1],
     }));
 
   return (
-    <MaxWidthWrapper className="max-w-[1000px] w-full">
+    <div className="max-w-[1000px] mx-auto w-full">
       <div className="grid sm:grid-cols-2 gap-12">
         <DynamicBluredImage
           image={product.photos[0]}
@@ -65,11 +68,11 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
           </div>
           <SelectSize sizes={sizes} />
           <SelectColor colors={colors} />
-          <AddToCart />
+          <AddToCart product={product} user={user} />
           <Separator className="bg-neutral-400 my-5" />
         </div>
       </div>
-    </MaxWidthWrapper>
+    </div>
   );
 };
 

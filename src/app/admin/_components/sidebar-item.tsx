@@ -1,5 +1,6 @@
 "use client";
 
+import { useSheetStore } from "@/hooks/use-sheet-store";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { ChevronRight, LucideIcon } from "lucide-react";
@@ -9,8 +10,7 @@ import { useState } from "react";
 interface SidebarItemProps {
   label: string;
   href?: string;
-  icon?: LucideIcon;
-  level?: number;
+  icon: LucideIcon;
   children?: {
     label: string;
     href: string;
@@ -20,30 +20,30 @@ interface SidebarItemProps {
 export const SidebarItem = ({
   label,
   href,
-  level = 0,
   icon: Icon,
   children,
 }: SidebarItemProps) => {
   const [open, setOpen] = useState(false);
+  const { onClose } = useSheetStore();
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleClick = ({ href, level }: { href?: string; level?: number }) => {
+  const handleClick = (href?: string) => {
     if (href) {
       router.push(href);
+      onClose();
     } else {
       setOpen(!open);
     }
   };
   return (
     <div
-      onClick={() => handleClick({ href, level })}
       key={label}
       role="button"
       className={cn("flex select-none flex-col font-medium text-foreground/70")}
-      style={{ paddingLeft: `${level * 20}px` }}
     >
       <div
+        onClick={() => handleClick(href)}
         className={cn(
           "flex items-center gap-3 hover:bg-neutral-200 py-2 px-3 rounded-md",
           pathname === href && "bg-background text-primary hover:bg-background"
@@ -60,22 +60,33 @@ export const SidebarItem = ({
           />
         )}
       </div>
-      <motion.div
-        variants={{ hidden: { height: 0 }, visible: { height: "auto" } }}
-        initial="hidden"
-        animate={open ? "visible" : "hidden"}
-        className="overflow-hidden"
-      >
-        {children &&
-          children.map(({ label, href }) => (
-            <SidebarItem
-              key={label}
-              label={label}
-              href={href}
-              level={level + 1}
-            />
+      {children && (
+        <motion.div
+          variants={{
+            hidden: {
+              pointerEvents: "none",
+              height: 0,
+            },
+            visible: {
+              pointerEvents: "auto",
+              height: "auto",
+            },
+          }}
+          initial="hidden"
+          animate={open ? "visible" : "hidden"}
+          className="overflow-hidden"
+        >
+          {children.map(({ label, href }) => (
+            <div
+              onClick={() => handleClick(href)}
+              key="label"
+              className="ml-6 px-3 py-2 hover:bg-neutral-200 rounded-md cursor-pointer"
+            >
+              {label}
+            </div>
           ))}
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };

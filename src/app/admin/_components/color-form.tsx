@@ -30,7 +30,7 @@ export const ColorForm = ({}: ColorFormProps) => {
     resolver: zodResolver(ColorSchema),
     defaultValues: {
       name: "",
-      hexCode: "#333333",
+      hex: "#333333",
     },
   });
 
@@ -56,7 +56,7 @@ export const ColorForm = ({}: ColorFormProps) => {
       >
         <FormField
           control={form.control}
-          name="hexCode"
+          name="hex"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Hex Code</FormLabel>
@@ -64,7 +64,7 @@ export const ColorForm = ({}: ColorFormProps) => {
                 <ColorPicker
                   value={field.value}
                   onChange={(value) =>
-                    form.setValue("hexCode", value, { shouldValidate: true })
+                    form.setValue("hex", value, { shouldValidate: true })
                   }
                 />
               </FormControl>

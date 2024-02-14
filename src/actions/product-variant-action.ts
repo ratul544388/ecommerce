@@ -16,7 +16,7 @@ export const createProductVariant = async ({
       return { error: "Invalid fields" };
     }
 
-    const { photo, color, quantity, size, offerPrice, price } = values;
+    const { color, size, offerPrice, price } = values;
 
     if (price && price === offerPrice) {
       return { error: "Price and offer price cannot be same" };
@@ -28,9 +28,10 @@ export const createProductVariant = async ({
 
     const existingVariant = await db.variant.findFirst({
       where: {
-        color: color?.name,
-        colorHex: color?.hex,
         size,
+        color: {
+          equals: color,
+        },
       },
     });
 
@@ -68,14 +69,8 @@ export const createProductVariant = async ({
 
     await db.variant.create({
       data: {
+        ...values,
         productId,
-        photo,
-        size,
-        quantity,
-        price,
-        offerPrice,
-        color: color?.name,
-        colorHex: color?.hex,
       },
     });
 
@@ -101,7 +96,7 @@ export const updateProductVariant = async ({
       return { error: "Invalid fields" };
     }
 
-    const { photo, color, quantity, size, offerPrice, price } = values;
+    const { color, size, offerPrice, price } = values;
 
     if (price && price === offerPrice) {
       return { error: "Price and offer price cannot be same" };
@@ -116,8 +111,9 @@ export const updateProductVariant = async ({
         id: {
           not: variantId,
         },
-        color: color?.name,
-        colorHex: color?.hex,
+        color: {
+          equals: color,
+        },
         size,
       },
     });
@@ -161,15 +157,7 @@ export const updateProductVariant = async ({
       where: {
         id: variantId,
       },
-      data: {
-        photo,
-        size,
-        quantity,
-        price,
-        offerPrice,
-        color: color?.name,
-        colorHex: color?.hex,
-      },
+      data: values,
     });
 
     return { success: "Variant Updated!" };

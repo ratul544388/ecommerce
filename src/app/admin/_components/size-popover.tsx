@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { CheckIcon } from "lucide-react";
+import { CheckIcon, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -17,13 +17,23 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 
-interface SelectSizeProps {
+interface SizePopoverProps {
   sizes: string[];
   value?: string;
   onChange: (value: string) => void;
+  triggerClassName?: string;
+  containerClassName?: string;
+  filter?: boolean;
 }
 
-export const SizeSelect = ({ sizes, onChange, value }: SelectSizeProps) => {
+export const SizePopover = ({
+  sizes,
+  onChange,
+  value,
+  triggerClassName,
+  containerClassName,
+  filter,
+}: SizePopoverProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -32,16 +42,18 @@ export const SizeSelect = ({ sizes, onChange, value }: SelectSizeProps) => {
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-start",
-            !value && "text-muted-foreground"
+            "w-full justify-between",
+            !value && "text-muted-foreground",
+            triggerClassName
           )}
         >
           {value || "Select Product Size"}
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0">
+      <PopoverContent className={cn("p-0", containerClassName)}>
         <Command>
-          <CommandInput placeholder="Search..." />
+          {filter && <CommandInput placeholder="Search..." />}
           <CommandEmpty>No colors found</CommandEmpty>
           <CommandGroup>
             {sizes.map((size) => (

@@ -1,4 +1,3 @@
-
 import { StaticBluredImage } from "@/components/static-blured-photo";
 import { newarrivals } from "@/constants";
 import { cn } from "@/lib/utils";

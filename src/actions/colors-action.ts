@@ -25,7 +25,7 @@ export const createColor = async (values: z.infer<typeof ColorSchema>) => {
 
     const existingHex = await db.color.findUnique({
       where: {
-        hexCode: values.hexCode,
+        hex: values.hex,
       },
     });
 

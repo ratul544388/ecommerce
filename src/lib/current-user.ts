@@ -12,6 +12,18 @@ export async function currentUser() {
     where: {
       userId,
     },
+    include: {
+      cartItems: {
+        include: {
+          product: {
+            include: {
+              variants: true,
+            }
+          },
+          variant: true,
+        },
+      },
+    },
   });
 
   return user;

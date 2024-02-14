@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "framer-motion";
 import { LucideIcon, MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
+import { ReactNode } from "react";
 interface DropdownMenuProps {
   items: {
     label: string;

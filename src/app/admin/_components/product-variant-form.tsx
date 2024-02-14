@@ -25,9 +25,9 @@ import { variantSchema } from "@/schemas";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { ColorSelect } from "./color-select";
+import { ColorPopover } from "./color-popover";
 import { ImageUpload } from "./image-upload";
-import { SizeSelect } from "./size-select";
+import { SizePopover } from "./size-popover";
 
 interface ProductVariantsProps {
   productId: string;
@@ -50,7 +50,7 @@ export const ProductVariantForm = ({
     resolver: zodResolver(variantSchema),
     defaultValues: {
       photo: "",
-      color: undefined,
+      color: [],
       price: undefined,
       offerPrice: undefined,
       quantity: undefined,
@@ -60,14 +60,10 @@ export const ProductVariantForm = ({
 
   useEffect(() => {
     if (variant) {
-      const { photo, color, colorHex, price, offerPrice, quantity, size } =
-        variant;
+      const { photo, color, price, offerPrice, quantity, size } = variant;
       form.reset({
         photo: photo as string,
-        color: {
-          name: color as string,
-          hex: colorHex as string,
-        },
+        color,
         size: size as string,
         price: price || undefined,
         offerPrice: offerPrice || undefined,
@@ -155,12 +151,9 @@ export const ProductVariantForm = ({
               <FormItem>
                 <FormLabel>Color</FormLabel>
                 <FormControl>
-                  <ColorSelect
+                  <ColorPopover
                     value={field.value}
-                    colors={colors.map((color) => ({
-                      name: color.name,
-                      hex: color.hexCode,
-                    }))}
+                    colors={colors.map((color) => [color.name, color.hex])}
                     onChange={(value) => form.setValue("color", value)}
                   />
                 </FormControl>
@@ -175,7 +168,7 @@ export const ProductVariantForm = ({
               <FormItem>
                 <FormLabel>Size</FormLabel>
                 <FormControl>
-                  <SizeSelect
+                  <SizePopover
                     value={field.value}
                     onChange={field.onChange}
                     sizes={sizes.map((item) => item.title)}

@@ -3,11 +3,11 @@
 import { PageNavigations } from "@/components/page-navigations";
 import { Separator } from "@/components/ui/separator";
 import { useModal } from "@/hooks/use-modal-store";
-import { Category, Color } from "@prisma/client";
+import { pluralize } from "@/lib/utils";
+import { Color } from "@prisma/client";
 import { useState } from "react";
 import { Actions } from "../../_components/actions";
 import { Item } from "../../_components/item";
-import { pluralize } from "@/lib/utils";
 
 interface ColorsClientProps {
   colors: Color[];
@@ -66,7 +66,7 @@ export const ColorsClient = ({ colors }: ColorsClientProps) => {
             key={item.id}
             id={item.id}
             label={item.name}
-            color={item.hexCode}
+            color={item.hex}
           />
         ))}
       </div>

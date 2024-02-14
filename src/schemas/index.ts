@@ -18,12 +18,7 @@ export const ProductSchema = z.object({
 });
 
 export const variantSchema = z.object({
-  color: z
-    .object({
-      name: z.string(),
-      hex: z.string(),
-    })
-    .optional(),
+  color: z.array(z.string()),
   size: z.string().optional(),
   photo: z.string().optional(),
   quantity: z.coerce
@@ -52,6 +47,5 @@ export const ColorSchema = z.object({
     .string()
     .min(1, { message: "Color is required" })
     .max(20, { message: "Color name is too long" }),
-  hexCode: z.string().min(1, { message: "Hex code is required" }),
+  hex: z.string().min(1, { message: "Hex code is required" }),
 });
-

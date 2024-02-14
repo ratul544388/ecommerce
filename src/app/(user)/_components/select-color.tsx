@@ -1,49 +1,43 @@
 "use client";
 
+import { useSizeAndColorStore } from "@/hooks/use-size-and-color-store";
 import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import qs from "query-string";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SelectVariantProps {
   colors: {
     name: string;
-    hexCode: string;
+    hex: string;
   }[];
 }
 
 export const SelectColor = ({ colors }: SelectVariantProps) => {
-  const [value, setValue] = useState<string>();
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  const handleClick = (color: string) => {
-    const currentQuery = qs.parse(searchParams.toString());
-    setValue(color);
-    const url = qs.stringifyUrl({
-      url: pathname,
-      query: {
-        ...currentQuery,
-        color: color.toLowerCase(),
-      },
-    });
-    router.push(url);
+  const { color, setColor } = useSizeAndColorStore();
+  const handleClick = (color: string[]) => {
+    setColor(color);
   };
+
+  useEffect(() => {
+    if (colors.length === 1) {
+      setColor([colors[0].name, colors[0].hex]);
+    }
+  }, [colors, setColor]);
 
   return (
     <div className="space-y-1 mt-4">
-      <h4 className="text-sm font-semibold">Select color:</h4>
+      <h4 className="text-sm font-semibold">
+        {colors.length === 1 ? "Color:" : "Select Color:"}
+      </h4>
       <div className="flex items-center gap-3">
-        {colors.map(({ name, hexCode }) => (
+        {colors.map(({ name, hex }) => (
           <span
-            onClick={() => handleClick(name)}
+            onClick={() => handleClick([name, hex])}
             className={cn(
-              "h-9 w-9 rounded-sm cursor-pointer",
-              value === name && "ring-2 ring-sky-500"
+              "h-8 w-8 rounded-sm cursor-pointer",
+              name === color?.[0] && "ring-2 ring-sky-500"
             )}
             key={name}
-            style={{ backgroundColor: hexCode }}
+            style={{ backgroundColor: hex }}
           />
         ))}
       </div>

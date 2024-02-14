@@ -28,7 +28,7 @@ export const VariantInfo = ({
   const items = [
     {
       label: "Color",
-      value: variant.color,
+      value: variant.color[0],
     },
     {
       label: "Size",
@@ -68,7 +68,7 @@ export const VariantInfo = ({
                   <h4 className="text-sm font-semibold text-muted-foreground">
                     {item.label}
                   </h4>
-                  <p className="font-bold">{item.value}</p>
+                  <p className="font-bold capitalize">{item.value}</p>
                 </div>
               )}
             </Fragment>

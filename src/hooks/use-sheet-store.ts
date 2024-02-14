@@ -1,15 +1,15 @@
 import { create } from "zustand";
 
-export type ModalType = "useMobileSidebar" | "adminMobileSidebar" | "cart";
+export type SheetType = "useMobileSidebar" | "sidebar" | "cart";
 
 interface ModalStore {
-  type: ModalType | null;
+  type: SheetType | null;
   isOpen: boolean;
-  onOpen: (type: ModalType) => void;
+  onOpen: (type: SheetType) => void;
   onClose: () => void;
 }
 
-export const useModal = create<ModalStore>((set) => ({
+export const useSheetStore = create<ModalStore>((set) => ({
   type: null,
   data: {},
   isOpen: false,
