@@ -47,6 +47,35 @@ export const adminRoutes = [
   },
 ];
 
+export const categories = [
+  {
+    title: "Man",
+    subCategories: [
+      { title: "T-Shirt" },
+      { title: "Shirt" },
+      { title: "Pants" },
+      { title: "Jeans" },
+    ],
+  },
+  {
+    title: "Woman",
+    subCategories: [
+      { title: "Dresses" },
+      { title: "Tops" },
+      { title: "Skirts" },
+      { title: "Jeans" },
+    ],
+  },
+  {
+    title: "Kid",
+    subCategories: [
+      { title: "Boys" },
+      { title: "Girls" },
+      { title: "Infants" },
+    ],
+  },
+];
+
 export const newarrivals = [
   {
     name: "Polo Tshirt",

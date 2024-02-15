@@ -2,20 +2,29 @@
 
 import * as z from "zod";
 
-import { CategorySchema } from "@/schemas";
 import { db } from "@/lib/db";
+import { CategorySchema } from "@/schemas";
 
 export const getCategories = async () => {
-  const categories = await db.category.findMany({});
+  const categories = await db.category.findMany({
+    include: {
+      subCategories: {
+        include: {
+          subCategories: true,
+        },
+      },
+    },
+    where: {
+      level: 1,
+    },
+  });
   return categories;
 };
 
 export const createCategory = async ({
   values,
-  categoryId,
 }: {
   values: z.infer<typeof CategorySchema>;
-  categoryId?: string;
 }) => {
   try {
     const validatedFields = CategorySchema.safeParse(values);
@@ -24,8 +33,46 @@ export const createCategory = async ({
       return { error: "Invalid category" };
     }
 
+    let sub = null;
+    if (values.subCategories?.length) {
+      sub = await db.category.findMany({
+        where: {
+          title: {
+            in: values.subCategories,
+          },
+        },
+      });
+      const levelOneCategories = sub
+        .filter((item) => item.level !== 1)
+        .map((item) => item.title);
+
+      if (levelOneCategories.length) {
+        await db.category.deleteMany({
+          where: {
+            title: {
+              in: values.subCategories,
+            },
+          },
+        });
+      }
+    }
+
     await db.category.create({
-      data: values,
+      data: {
+        title: values.title.toLowerCase(),
+        ...(sub
+          ? {
+              subCategories: {
+                createMany: {
+                  data: sub.map((item) => ({
+                    title: item.title.toLowerCase(),
+                    level: 2,
+                  })),
+                },
+              },
+            }
+          : {}),
+      },
     });
 
     return { success: "Category created" };
@@ -53,7 +100,9 @@ export const updateCategory = async ({
       where: {
         id: categoryId,
       },
-      data: values,
+      data: {
+        title: values.title,
+      },
     });
 
     return { success: "Category Updated" };

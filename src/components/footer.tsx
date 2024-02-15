@@ -6,11 +6,18 @@ import { motion, useAnimation } from "framer-motion";
 import { Button } from "./ui/button";
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export const Footer = () => {
+  const pathname = usePathname();
   const animation = useAnimation();
   return (
-    <div className="flex flex-col items-center w-full">
+    <div
+      className={cn(
+        "flex flex-col items-center w-full",
+        pathname.includes("shop") && "hidden"
+      )}
+    >
       <FooterWrapper>
         <div className="flex items-center gap-2 text-white/80">
           <Mail className="h-5 w-5 text-yellow-600" />

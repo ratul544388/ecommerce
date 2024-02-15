@@ -9,6 +9,7 @@ import { z } from "zod";
 
 import { createProduct, updateProduct } from "@/actions/product-action";
 import { CategorySelect } from "@/app/admin/_components/category-select";
+import { ImagesPreview } from "@/components/images-preview";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,15 +21,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 import { Category, Color, Product, Size, Variant } from "@prisma/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
-import { ProductVariantForm } from "./product-variant-form";
 import { ImageUpload } from "./image-upload";
-import { ImagesPreview } from "@/components/images-preview";
+import { ProductVariantForm } from "./product-variant-form";
+import { RichTextArea } from "./rich-text-area";
 import { VariantInfo } from "./variant-info";
-import { cn } from "@/lib/utils";
 
 interface ProductFormProps {
   categories: Category[];
@@ -243,11 +244,7 @@ export const ProductForm = ({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input
-                    autoFocus={!!!product}
-                    placeholder="Enter new Product Description"
-                    {...field}
-                  />
+                  <RichTextArea value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

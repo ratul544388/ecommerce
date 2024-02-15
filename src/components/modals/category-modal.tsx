@@ -22,6 +22,7 @@ import { CategorySchema } from "@/schemas";
 import { useRouter } from "next/navigation";
 import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
+import { CategorySelect } from "@/app/admin/_components/category-select";
 
 interface CategoryModalProps {}
 
@@ -31,12 +32,13 @@ export const CategoryModal = ({}: CategoryModalProps) => {
   const [isPending, startTransition] = useTransition();
   const open = isOpen && type === "categoryModal";
 
-  const { category, title } = data;
+  const { category, categories, title } = data;
 
   const form = useForm<z.infer<typeof CategorySchema>>({
     resolver: zodResolver(CategorySchema),
     defaultValues: {
       title: "",
+      subCategories: [],
     },
   });
 
@@ -98,6 +100,23 @@ export const CategoryModal = ({}: CategoryModalProps) => {
                     disabled={isPending}
                     placeholder="Enter category title"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subCategories"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sub Categories</FormLabel>
+                <FormControl>
+                  <CategorySelect
+                    options={categories || []}
+                    value={field.value}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

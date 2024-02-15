@@ -1,4 +1,4 @@
-import { Category, Color, Size } from "@prisma/client";
+import { Category, Color, Size, User } from "@prisma/client";
 import { create } from "zustand";
 
 export type ModalType =
@@ -7,10 +7,13 @@ export type ModalType =
   | "colorModal"
   | "deleteColorsModal"
   | "sizeModal"
-  | "deleteSizeModal";
+  | "deleteSizeModal"
+  | "checkoutModal"
 
 interface ModalData {
+  user?: User | null;
   category?: Category;
+  categories?: string[];
   color?: Color;
   size?: Size;
   title?: string;

@@ -2,6 +2,7 @@
 
 import { MobileSidebar } from "@/app/admin/_components/mobile-sidebar";
 import { CategoryModal } from "@/components/modals/category-modal";
+import { CheckoutModal } from "@/components/modals/checkout-modal";
 import { ColorModal } from "@/components/modals/color-modal";
 import { DeleteCategoryModal } from "@/components/modals/delete-category-modal";
 import { DeleteColorsModal } from "@/components/modals/delete-colors-modal";
@@ -19,6 +20,9 @@ export const ModalProvider = ({ user }: { user: UserWithCart | null }) => {
       <DeleteColorsModal />
       <SizeModal />
       <DeleteSizeModal />
+      <CheckoutModal />
+
+      {/* sheet */}
       <CartSheet user={user} />
       <MobileSidebar />
     </>

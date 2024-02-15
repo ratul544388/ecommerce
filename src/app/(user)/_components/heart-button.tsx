@@ -1,7 +1,8 @@
 "use client";
 import { wishListAction } from "@/actions/wish-list-action";
+import { Button } from "@/components/ui/button";
 import { User } from "@prisma/client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
 import { toast } from "sonner";
@@ -15,6 +16,7 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
   const [_, startTransition] = useTransition();
   const [wishList, setWishList] = useState<string[]>(user?.wishList || []);
   const router = useRouter();
+  const pathname = usePathname();
 
   const hasWishList = useMemo(
     () => wishList.includes(productId),
@@ -22,6 +24,9 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
   );
 
   const handleClick = () => {
+    if (!user) {
+      return router.push(`/sign-in?redirect_url=${pathname}`);
+    }
     setWishList((prevWishList) =>
       hasWishList
         ? prevWishList.filter((item) => item !== productId)
@@ -51,8 +56,14 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
   const HeartIcon = hasWishList ? TiHeartFullOutline : TiHeartOutline;
 
   return (
-    <button onClick={handleClick} className="heart-button">
+    <Button
+      onClick={handleClick}
+      variant="outline"
+      size="icon"
+      className="h-14 w-14 flex flex-col"
+    >
       <HeartIcon className="h-8 w-8 text-rose-500" />
-    </button>
+      <p className="text-xs font-light">Wishlist</p>
+    </Button>
   );
 };

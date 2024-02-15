@@ -17,7 +17,7 @@ export const DynamicBluredImage = async ({
   return (
     <div
       className={cn(
-        "w-full max-w-[300px] overflow-hidden rounded-md relative aspect-square",
+        "w-full overflow-hidden rounded-md relative aspect-square",
         className
       )}
     >

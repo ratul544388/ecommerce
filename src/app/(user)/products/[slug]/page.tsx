@@ -9,6 +9,9 @@ import { AddToCart } from "../../_components/add-to-cart";
 import { HeartButton } from "../../_components/heart-button";
 import { SelectColor } from "../../_components/select-color";
 import { SelectSize } from "../../_components/select-size";
+import { getProducts } from "@/actions/product-action";
+import { ProductCard } from "@/components/product-card";
+import { BuyNowButton } from "./buy-now-button";
 
 const ProductPage = async ({ params }: { params: { slug: string } }) => {
   const user = await currentUser();
@@ -24,6 +27,8 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
   if (!product) {
     notFound();
   }
+
+  const products = await getProducts();
 
   const sizes = product.variants
     .filter((variant) => variant.size)
@@ -41,7 +46,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     }));
 
   return (
-    <div className="max-w-[1000px] mx-auto w-full">
+    <div className="max-w-[1000px] mx-auto w-full space-y-16">
       <div className="grid sm:grid-cols-2 gap-12">
         <DynamicBluredImage
           image={product.photos[0]}
@@ -69,7 +74,20 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
           <SelectSize sizes={sizes} />
           <SelectColor colors={colors} />
           <AddToCart product={product} user={user} />
+          <BuyNowButton classsName="mt-5"/>
           <Separator className="bg-neutral-400 my-5" />
+          <div dangerouslySetInnerHTML={{ __html: product.description }} />
+        </div>
+      </div>
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold text-foreground/90">
+          You may also like
+        </h3>
+        <Separator />
+        <div className="grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {products.map((product) => (
+            <ProductCard product={product} key={product.id} />
+          ))}
         </div>
       </div>
     </div>

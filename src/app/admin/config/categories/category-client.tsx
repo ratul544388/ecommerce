@@ -10,7 +10,11 @@ import { Actions } from "../../_components/actions";
 import { Item } from "../../_components/item";
 
 interface CategoryClientProps {
-  categories: Category[];
+  categories: (Category & {
+    subCategories: (Category & {
+      subCategories: Category[];
+    })[];
+  })[];
 }
 
 export const CategoryClient = ({ categories }: CategoryClientProps) => {
@@ -39,7 +43,11 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
       <Separator />
       <Actions
         ids={checkedIds}
-        addAction={() => onOpen("categoryModal")}
+        addAction={() =>
+          onOpen("categoryModal", {
+            categories: categories.map((category) => category.title),
+          })
+        }
         editAction={() =>
           onOpen("categoryModal", {
             title: `Edit "${categories[0].title}" Category`,
@@ -63,12 +71,23 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
       <Separator />
       <div className="border rounded-md shadow-md px-2 py-5">
         {categories.map((item) => (
-          <Item
-            onCheckChange={onCheckChange}
-            key={item.id}
-            id={item.id}
-            label={item.title}
-          />
+          <div key={item.id}>
+            <Item
+              onCheckChange={onCheckChange}
+              key={item.id}
+              id={item.id}
+              label={item.title}
+            />
+            {item.subCategories.map((item) => (
+              <Item
+                id={item.id}
+                key={item.id}
+                label={item.title}
+                onCheckChange={() => {}}
+                level={item.level}
+              />
+            ))}
+          </div>
         ))}
       </div>
     </div>

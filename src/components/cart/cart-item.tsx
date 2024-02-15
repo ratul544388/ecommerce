@@ -108,7 +108,7 @@ export const CartItem = ({ cartItem, user }: CartItemProps) => {
   const details = [
     {
       label: "Price",
-      value: `$${product.price}`,
+      value: `$${product.offerPrice || product.price}`,
     },
     {
       label: "Size",

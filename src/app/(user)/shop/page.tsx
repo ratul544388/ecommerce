@@ -1,18 +1,22 @@
 import { getProducts } from "@/actions/product-action";
+import { SidebarCategories } from "@/components/categories/sidebar-categories";
 import { ProductCard } from "@/components/product-card";
-import { db } from "@/lib/db";
-import React from "react";
 
-const Page = async () => {
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string };
+}) => {
   const products = await getProducts();
   return (
-    <div className="">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+    <>
+      <SidebarCategories />
+      <div className="md:pl-[250px] grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

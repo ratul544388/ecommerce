@@ -8,6 +8,7 @@ import { CartItem } from "../cart/cart-item";
 import { Sheet } from "../sheet";
 import { Separator } from "../ui/separator";
 import { ChevronRight } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface CartSheetProps {
   user: UserWithCart | null;
@@ -15,6 +16,7 @@ interface CartSheetProps {
 
 export const CartSheet = ({ user }: CartSheetProps) => {
   const { isOpen, type } = useSheetStore();
+  const { onOpen } = useModal();
   const { cart, setCart } = useCartStore();
 
   useEffect(() => {
@@ -45,7 +47,10 @@ export const CartSheet = ({ user }: CartSheetProps) => {
           </p>
           $1000
         </div>
-        <div className="w-full h-full bg-green-600 hover:bg-green-600/90 flex items-center justify-center flex-1 text-white/90 font-semibold text-lg">
+        <div
+          onClick={() => onOpen("checkoutModal")}
+          className="w-full cursor-pointer select-none h-full bg-green-600 hover:bg-green-600/90 flex items-center justify-center flex-1 text-white/90 font-semibold text-lg"
+        >
           Checkout
           <ChevronRight className="h-5 w-5 ml02" />
         </div>

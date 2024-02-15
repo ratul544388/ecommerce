@@ -52,7 +52,7 @@ export const Sheet = ({
       onClick={handleClose}
       initial="hidden"
       animate={animate}
-      className="bg-neutral-900/20 backdrop-blur-sm fixed inset-0 z-50 py-5 px-6"
+      className="bg-neutral-900/20 backdrop-blur-sm fixed inset-0 z-40 py-5 px-6"
     >
       <motion.aside
         onClick={(e) => e.stopPropagation()}

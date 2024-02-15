@@ -3,10 +3,13 @@ import { db } from "@/lib/db";
 import { ProductSchema } from "@/schemas";
 import * as z from "zod";
 
-export const getProducts = async () => {
+export const getProducts = async ({ filters }: { filters?: string[] } = {}) => {
   const products = await db.product.findMany({
     include: {
       variants: true,
+    },
+    where: {
+
     },
   });
 
@@ -20,7 +23,7 @@ export const createProduct = async (values: z.infer<typeof ProductSchema>) => {
       return { error: "Invalid fields" };
     }
 
-    const slug = values.name.replace(/\s+/g, "-");
+    const slug = values.name.replace(/\s+/g, "-").toLowerCase();
 
     const product = await db.product.create({
       data: {
@@ -49,7 +52,7 @@ export const updateProduct = async ({
       return { error: "Invalid fields" };
     }
 
-    const slug = values.name.replace(/\s+/g, "-");
+    const slug = values.name.replace(/\s+/g, "-").toLowerCase();
 
     await db.product.update({
       where: {

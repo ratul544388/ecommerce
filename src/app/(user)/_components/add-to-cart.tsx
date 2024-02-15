@@ -39,8 +39,11 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
     }
     setError("");
     const previousCart = cart;
-    if (cart.some((item) => item.product.id === product.id)) {
-      updateCart(product.id, quantity);
+    const existingCart = user?.cartItems.find((item) => {
+      return item.variant?.id === variant?.id;
+    });
+    if (existingCart && variant) {
+      updateCart(variant.id, quantity);
     } else {
       const newItem = {
         id: uuid(),

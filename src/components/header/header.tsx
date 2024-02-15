@@ -6,7 +6,7 @@ import { AuthButtons } from "../auth-buttons";
 import { CartTrigger } from "../cart/cart-trigger";
 import { SidebarTrigger } from "../sidebar-trigger";
 import { WishListButton } from "../wishlist/wish-list-button";
-import { Catetories } from "./categories";
+import { Catetories } from "../categories/categories";
 import { DesktopSearch } from "./desktop-search";
 import { Logo } from "./logo";
 import { MobileSearch } from "./mobile-search";

@@ -12,7 +12,8 @@ export const CartTrigger = ({}: CartTriggerProps) => {
   const { cart } = useCartStore();
 
   const total = cart.reduce((total, item) => {
-    return (total += item.product.price * item.quantity);
+    return (total +=
+      (item.product.offerPrice || item.product.price) * item.quantity);
   }, 0);
 
   return (

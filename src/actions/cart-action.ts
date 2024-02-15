@@ -19,9 +19,9 @@ export const cartAction = async ({
       return { error: "Unauthenticated" };
     }
 
-    const existingCart = user.cartItems.find(
-      (item) => item.productId === productId
-    );
+    const existingCart = user.cartItems.find((item) => {
+      return item.variantId === variantId;
+    });
 
     const updatedUser = await db.user.update({
       where: {

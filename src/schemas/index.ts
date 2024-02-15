@@ -33,6 +33,7 @@ export const CategorySchema = z.object({
     .string()
     .min(1, { message: "Category is required" })
     .max(20, { message: "Category is too long" }),
+  subCategories: z.array(z.string()),
 });
 
 export const SizeSchema = z.object({
@@ -48,4 +49,12 @@ export const ColorSchema = z.object({
     .min(1, { message: "Color is required" })
     .max(20, { message: "Color name is too long" }),
   hex: z.string().min(1, { message: "Hex code is required" }),
+});
+
+export const CheckoutSchema = z.object({
+  address: z.string().min(10, { message: "Address is too short" }),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number is too short" })
+    .max(12, { message: "Phone number can not be more than 12 digits" }),
 });
