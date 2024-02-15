@@ -10,11 +10,7 @@ import { Actions } from "../../_components/actions";
 import { Item } from "../../_components/item";
 
 interface CategoryClientProps {
-  categories: (Category & {
-    subCategories: (Category & {
-      subCategories: Category[];
-    })[];
-  })[];
+  categories: Category[];
 }
 
 export const CategoryClient = ({ categories }: CategoryClientProps) => {
@@ -56,7 +52,7 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
             ),
           })
         }
-        deleteAction={() =>
+      deleteAction={() =>
           onOpen("deleteCategoryModal", {
             ids: checkedIds,
             title: `Delete Seleted ${pluralize(
@@ -78,15 +74,6 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
               id={item.id}
               label={item.title}
             />
-            {item.subCategories.map((item) => (
-              <Item
-                id={item.id}
-                key={item.id}
-                label={item.title}
-                onCheckChange={() => {}}
-                level={item.level}
-              />
-            ))}
           </div>
         ))}
       </div>

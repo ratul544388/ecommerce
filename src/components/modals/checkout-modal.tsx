@@ -23,7 +23,7 @@ import { useEffect } from "react";
 export const CheckoutModal = () => {
   const { isOpen, type, data } = useModal();
 
-  const { user } = data;
+  const { user, orderItems } = data;
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),

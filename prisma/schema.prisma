@@ -22,6 +22,7 @@ model User {
 
   cartItems CartItem[]
   wishList  String[]
+  orders    Order[]
 }
 
 model CartItem {
@@ -54,8 +55,9 @@ model Product {
 
   createdAt DateTime @default(now())
 
-  variants  Variant[]
-  cartItems CartItem[]
+  variants   Variant[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 }
 
 model Variant {
@@ -71,17 +73,15 @@ model Variant {
   product   Product @relation(fields: [productId], references: [id])
   productId String  @db.ObjectId
 
-  cartItems CartItem[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
 }
 
 model Category {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String
 
-  level         Int        @default(1)
-  subCategories Category[] @relation("subCategory")
-  categoryId    String?    @db.ObjectId
-  subCategory   Category?  @relation(name: "subCategory", fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subCategories String[]
 }
 
 model Color {
@@ -94,4 +94,46 @@ model Color {
 model Size {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   title String @unique
+}
+
+model Order {
+  id     String      @id @default(auto()) @map("_id") @db.ObjectId
+  status OrderStatus
+
+  createdAt DateTime @default(now())
+
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String      @db.ObjectId
+  orderItems OrderItem[]
+}
+
+model OrderItem {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String @db.ObjectId
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+
+  quantity Int
+
+  variant   Variant? @relation(fields: [variantId], references: [id])
+  variantId String?  @db.ObjectId
+}
+
+model StripeCustomer {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String @unique
+  stripeCustomerId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderStatus {
+  WAITING_FOR_PAYMENT
+  DELIVERY_PENDING
+  CANCELED
+  DELIVERED
 }

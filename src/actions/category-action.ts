@@ -6,18 +6,7 @@ import { db } from "@/lib/db";
 import { CategorySchema } from "@/schemas";
 
 export const getCategories = async () => {
-  const categories = await db.category.findMany({
-    include: {
-      subCategories: {
-        include: {
-          subCategories: true,
-        },
-      },
-    },
-    where: {
-      level: 1,
-    },
-  });
+  const categories = await db.category.findMany();
   return categories;
 };
 
@@ -33,46 +22,8 @@ export const createCategory = async ({
       return { error: "Invalid category" };
     }
 
-    let sub = null;
-    if (values.subCategories?.length) {
-      sub = await db.category.findMany({
-        where: {
-          title: {
-            in: values.subCategories,
-          },
-        },
-      });
-      const levelOneCategories = sub
-        .filter((item) => item.level !== 1)
-        .map((item) => item.title);
-
-      if (levelOneCategories.length) {
-        await db.category.deleteMany({
-          where: {
-            title: {
-              in: values.subCategories,
-            },
-          },
-        });
-      }
-    }
-
     await db.category.create({
-      data: {
-        title: values.title.toLowerCase(),
-        ...(sub
-          ? {
-              subCategories: {
-                createMany: {
-                  data: sub.map((item) => ({
-                    title: item.title.toLowerCase(),
-                    level: 2,
-                  })),
-                },
-              },
-            }
-          : {}),
-      },
+      data: values,
     });
 
     return { success: "Category created" };
@@ -100,9 +51,7 @@ export const updateCategory = async ({
       where: {
         id: categoryId,
       },
-      data: {
-        title: values.title,
-      },
+      data: values,
     });
 
     return { success: "Category Updated" };

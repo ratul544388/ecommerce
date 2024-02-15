@@ -8,7 +8,6 @@ interface ItemProps {
   label: string;
   color?: string;
   onCheckChange: (id: string) => void;
-  level?: number;
 }
 
 export const Item = ({
@@ -16,12 +15,10 @@ export const Item = ({
   label,
   color,
   onCheckChange,
-  level = 0,
 }: ItemProps) => {
   return (
     <div
       className="font-medium flex items-center gap-3 py-1.5 hover:bg-accent rounded-md"
-      style={{ paddingLeft: `calc(12px + 12 * ${level}px)` }}
     >
       <Checkbox onCheckedChange={() => onCheckChange(id)} id={id} />
       {color && (

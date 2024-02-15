@@ -1,3 +1,4 @@
+import { OrderItem } from "@/actions/order-action";
 import { Category, Color, Size, User } from "@prisma/client";
 import { create } from "zustand";
 
@@ -8,7 +9,7 @@ export type ModalType =
   | "deleteColorsModal"
   | "sizeModal"
   | "deleteSizeModal"
-  | "checkoutModal"
+  | "checkoutModal";
 
 interface ModalData {
   user?: User | null;
@@ -20,6 +21,7 @@ interface ModalData {
   id?: string;
   ids?: string[];
   onSuccess?: () => void;
+  orderItems?: OrderItem[];
 }
 
 interface ModalStore {
