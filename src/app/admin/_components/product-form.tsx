@@ -208,7 +208,7 @@ export const ProductForm = ({
               </FormItem>
             )}
           />
-          <div className="space-y-3">
+          <div className="space-y-3 md:col-span-2">
             <label className="text-sm font-medium">Product Photos</label>
             <div className="flex items-center flex-wrap gap-3">
               <ImagesPreview
@@ -221,7 +221,7 @@ export const ProductForm = ({
                 control={form.control}
                 name="photos"
                 render={({}) => (
-                  <FormItem className="md:col-span-2">
+                  <FormItem className="">
                     <FormControl>
                       <ImageUpload
                         onUpload={(value) => {
@@ -241,7 +241,7 @@ export const ProductForm = ({
             control={form.control}
             name="description"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="md:col-span-2">
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <RichTextArea value={field.value} onChange={field.onChange} />

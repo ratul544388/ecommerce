@@ -18,9 +18,9 @@ export const ProductCard = async ({ product }: ProductCardProps) => {
       >
         <DynamicBluredImage
           image={product.photos[0]}
-          className="group-hover:scale-105 transition-all duration-500"
+          className="group-hover:scale-105 transition-all duration-500 rounded-none"
         />
-        <h5 className="text-sm font-semibold text-foreground/80 mt-1">
+        <h5 className="text-sm font-semibold text-foreground/80 pt-1 h-[42px] text-center bg-background z-20 w-full">
           {product.name}
         </h5>
         <div className="bg-neutral-800 px-2 py-1 text-white/80 text-xs font-semibold rounded-md mt-1">

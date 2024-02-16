@@ -49,12 +49,12 @@ export const adminRoutes = [
 
 export const categories = [
   {
-    title: "Man",
+    title: "man",
     subCategories: [
-      { title: "T-Shirt" },
-      { title: "Shirt" },
-      { title: "Pants" },
-      { title: "Jeans" },
+      { title: "t-shirt" },
+      { title: "shirt" },
+      { title: "pants" },
+      { title: "trouser" },
     ],
   },
   {

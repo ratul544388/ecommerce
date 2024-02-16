@@ -9,7 +9,8 @@ export type ModalType =
   | "deleteColorsModal"
   | "sizeModal"
   | "deleteSizeModal"
-  | "checkoutModal";
+  | "checkoutModal"
+  | "cancelOrderModal"
 
 interface ModalData {
   user?: User | null;
@@ -22,6 +23,8 @@ interface ModalData {
   ids?: string[];
   onSuccess?: () => void;
   orderItems?: OrderItem[];
+  orderId?: string;
+  clearCart?: "true" | "false"
 }
 
 interface ModalStore {

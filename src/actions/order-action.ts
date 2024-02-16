@@ -3,24 +3,34 @@
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
+import { CheckoutSchema } from "@/schemas";
 import { Product, Variant } from "@prisma/client";
 import Stripe from "stripe";
 
 export type OrderItem = {
   product: Product;
-  variant?: Variant;
+  variant?: Variant | null;
   quantity: number;
 };
 
 export type CheckoutType = {
   orderItems: OrderItem[];
   clearCart?: "true" | "false";
+  phone: string;
+  address: string;
 };
 
 export const checkout = async ({
   orderItems,
   clearCart = "false",
+  phone,
+  address,
 }: CheckoutType) => {
+  const validatedFields = CheckoutSchema.safeParse({ phone, address });
+  if (!validatedFields.success) {
+    return { error: "Invalid fields" };
+  }
+
   const user = await currentUser();
 
   if (!user) {
@@ -28,7 +38,30 @@ export const checkout = async ({
   }
 
   if (!user.address || user.phone) {
-    return { error: "Address or phone number is missing!" };
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        phone,
+        address,
+      },
+    });
+  }
+
+  const existingOrder = await db.order.findFirst({
+    where: {
+      status: "WAITING_FOR_PAYMENT",
+      userId: user.id,
+    },
+  });
+
+  if (existingOrder) {
+    await db.order.delete({
+      where: {
+        id: existingOrder.id,
+      },
+    });
   }
 
   const productItems = orderItems.map((item) => ({
@@ -100,4 +133,48 @@ export const checkout = async ({
   });
 
   return { url: session.url };
+};
+
+export const cancelOrder = async (orderId: string) => {
+  try {
+    const user = await currentUser();
+
+    if (!user) {
+      return { error: "Unauthenticated" };
+    }
+
+    const order = await db.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (order?.status === "DELIVERED") {
+      return {
+        error: "You cannot cancel the order. Order has already been delivered",
+      };
+    }
+
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        orders: {
+          update: {
+            where: {
+              id: orderId,
+            },
+            data: {
+              status: "CANCELED",
+            },
+          },
+        },
+      },
+    });
+
+    return { success: "Order canceled" };
+  } catch (error) {
+    return { error: "Something went wrong" };
+  }
 };

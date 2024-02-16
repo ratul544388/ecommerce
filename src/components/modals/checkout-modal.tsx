@@ -18,12 +18,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CheckoutSchema } from "@/schemas";
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
+import { checkout } from "@/actions/order-action";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { User } from "@prisma/client";
 
-export const CheckoutModal = () => {
+export const CheckoutModal = ({ user }: { user: User | null }) => {
   const { isOpen, type, data } = useModal();
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const { user, orderItems } = data;
+  const { orderItems, clearCart } = data;
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
@@ -44,7 +50,16 @@ export const CheckoutModal = () => {
   }, [user, form]);
 
   function onSubmit(values: z.infer<typeof CheckoutSchema>) {
-    
+    if (!orderItems) return;
+    startTransition(() => {
+      checkout({ orderItems, clearCart, ...values }).then(({ url, error }) => {
+        if (url) {
+          router.push(url);
+        } else if (error) {
+          toast.error(error);
+        }
+      });
+    });
   }
 
   return (
@@ -65,7 +80,11 @@ export const CheckoutModal = () => {
               <FormItem>
                 <FormLabel>Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Your Full Address" {...field} />
+                  <Input
+                    disabled={isPending}
+                    placeholder="Enter Your Full Address"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -78,13 +97,17 @@ export const CheckoutModal = () => {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Your Phone Number" {...field} />
+                  <Input
+                    disabled={isPending}
+                    placeholder="Enter Your Phone Number"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" className="ml-auto">
+          <Button disabled={isPending} type="submit" className="ml-auto">
             Place Order
           </Button>
         </form>

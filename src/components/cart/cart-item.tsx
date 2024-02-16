@@ -79,32 +79,6 @@ export const CartItem = ({ cartItem, user }: CartItemProps) => {
     }
   };
 
-  const sizePopover = (
-    <SizePopover
-      sizes={sizes}
-      value={size}
-      onChange={(value) => {
-        setSize(value);
-        updateCart({ currentSize: value, currentColor: color });
-      }}
-      triggerClassName="w-[120px] flex-row-reverse"
-      containerClassName="w-[120px]"
-    />
-  );
-
-  const colorPopover = (
-    <ColorPopover
-      colors={colors}
-      value={color}
-      onChange={(value) => {
-        setColor(value);
-        updateCart({ currentColor: value, currentSize: size });
-      }}
-      triggerClassName="w-[120px] flex-row-reverse"
-      containerClassName="w-[120px]"
-    />
-  );
-
   const details = [
     {
       label: "Price",
@@ -112,11 +86,11 @@ export const CartItem = ({ cartItem, user }: CartItemProps) => {
     },
     {
       label: "Size",
-      value: sizePopover,
+      value: size,
     },
     {
       label: "Color",
-      value: colors.length > 1 ? colorPopover : cartItem.variant?.color[0],
+      value: cartItem.variant?.color[0],
     },
     {
       label: "Quantity",

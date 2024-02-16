@@ -2,12 +2,13 @@
 
 import { cartAction } from "@/actions/cart-action";
 import { Button } from "@/components/ui/button";
+import { getProductVariant } from "@/helper";
 import { useCartStore } from "@/hooks/use-cart-store";
-import { useSizeAndColorStore } from "@/hooks/use-size-and-color-store";
+import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
 import { UserWithCart } from "@/types";
 import { Product, Variant } from "@prisma/client";
 import { Minus, Plus } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { uuid } from "uuidv4";
 
@@ -20,17 +21,18 @@ interface AddToCartProps {
 
 export const AddToCart = ({ product, user }: AddToCartProps) => {
   const { setCart, addToCart, cart, updateCart } = useCartStore();
-  const [error, setError] = useState("");
   const [_, startTransition] = useTransition();
-  const [quantity, setQuantity] = useState(1);
-  const { size, color } = useSizeAndColorStore();
+  const { size, color, quantity, setQuantity, error, setError } =
+    useProductSelectionStore();
 
   const handleClick = (qty: number) => {
     setQuantity(quantity + qty);
   };
 
-  const variant = product.variants.find((variant) => {
-    return variant.color[0] === color?.[0] && variant.size === size;
+  const variant = getProductVariant({
+    variants: product.variants,
+    size,
+    color,
   });
 
   const handleAddToCart = () => {

@@ -1,8 +1,8 @@
 "use client";
 
-import { useSizeAndColorStore } from "@/hooks/use-size-and-color-store";
+import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface SelectVariantProps {
   colors: {
@@ -12,7 +12,7 @@ interface SelectVariantProps {
 }
 
 export const SelectColor = ({ colors }: SelectVariantProps) => {
-  const { color, setColor } = useSizeAndColorStore();
+  const { color, setColor } = useProductSelectionStore();
   const handleClick = (color: string[]) => {
     setColor(color);
   };

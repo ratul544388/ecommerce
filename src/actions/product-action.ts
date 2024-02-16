@@ -1,16 +1,31 @@
 "use server";
+
 import { db } from "@/lib/db";
 import { ProductSchema } from "@/schemas";
 import * as z from "zod";
 
-export const getProducts = async ({ filters }: { filters?: string[] } = {}) => {
+export const getProducts = async ({
+  filters,
+  take = 10,
+  page = 1,
+}: { filters?: string[]; take?: number; page?: number } = {}) => {
+  const skip = (page - 1) * take;
+
   const products = await db.product.findMany({
     include: {
       variants: true,
     },
     where: {
-
+      ...(filters?.length
+        ? {
+            categories: {
+              hasEvery: filters,
+            },
+          }
+        : {}),
     },
+    ...(take ? { take } : {}),
+    skip,
   });
 
   return products;

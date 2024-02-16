@@ -7,11 +7,18 @@ interface PhotoProps {
   photo: string;
   className?: string;
   alt?: string;
+  onClick?: () => void;
 }
 
-export const Photo = ({ photo, className, alt = "photo" }: PhotoProps) => {
+export const Photo = ({
+  photo,
+  className,
+  alt = "photo",
+  onClick,
+}: PhotoProps) => {
   return (
     <div
+      onClick={onClick}
       className={cn(
         "w-full max-w-[80px] overflow-hidden rounded-md relative aspect-square",
         className

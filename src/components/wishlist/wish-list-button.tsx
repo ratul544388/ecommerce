@@ -14,7 +14,7 @@ export const WishListButton = () => {
           variant: "ghost",
           size: "sm",
         }),
-        "text-xs font-medium flex flex-col hover:text-rose-500"
+        "hidden sm:flex text-xs font-medium flex-col hover:text-rose-500"
       )}
     >
       <TiHeartOutline className="h-5 w-5 mr-2" />

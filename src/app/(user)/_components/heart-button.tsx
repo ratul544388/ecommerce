@@ -59,11 +59,10 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
     <Button
       onClick={handleClick}
       variant="outline"
-      size="icon"
-      className="h-14 w-14 flex flex-col"
+      className="text-muted-foreground hover:text-rose-500 mt-5"
     >
-      <HeartIcon className="h-8 w-8 text-rose-500" />
-      <p className="text-xs font-light">Wishlist</p>
+      <HeartIcon className="h-5 w-5 text-rose-500 mr-3" />
+      <p className="">{hasWishList ? "Wishlist added" : "Add to wishlist"}</p>
     </Button>
   );
 };

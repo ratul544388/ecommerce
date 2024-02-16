@@ -12,9 +12,17 @@ import { SelectSize } from "../../_components/select-size";
 import { getProducts } from "@/actions/product-action";
 import { ProductCard } from "@/components/product-card";
 import { BuyNowButton } from "./buy-now-button";
+import { PhotoTabs } from "../_components/photo-tabs";
 
-const ProductPage = async ({ params }: { params: { slug: string } }) => {
+const ProductPage = async ({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string };
+}) => {
   const user = await currentUser();
+  const activePhoto = Number(searchParams.photo) || 1;
   const product = await db.product.findUnique({
     where: {
       slug: params.slug,
@@ -46,21 +54,21 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     }));
 
   return (
-    <div className="max-w-[1000px] mx-auto w-full space-y-16">
+    <div className="max-w-[950px] mx-auto w-full space-y-16">
       <div className="grid sm:grid-cols-2 gap-12">
-        <DynamicBluredImage
-          image={product.photos[0]}
-          className="aspect-[7/8] max-w-full"
-        />
+        <div className="flex flex-col gap-5">
+          <DynamicBluredImage
+            image={product.photos[activePhoto - 1]}
+            className="aspect-[7/8] max-w-full"
+          />
+          <PhotoTabs photos={product.photos} activePhoto={activePhoto} />
+        </div>
         <div>
-          <div className="flex gap-5 items-start">
-            <h3
-              className={cn("capitalize text-2xl text-foreground/80 font-bold")}
-            >
-              {product.name}
-            </h3>
-            <HeartButton user={user} productId={product.id} />
-          </div>
+          <h3
+            className={cn("capitalize text-2xl text-foreground/80 font-bold")}
+          >
+            {product.name}
+          </h3>
           <div className="flex items-end gap-3 font-semibold mt-3">
             {product.offerPrice && (
               <div className="text-xl text-muted-foreground line-through">
@@ -74,7 +82,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
           <SelectSize sizes={sizes} />
           <SelectColor colors={colors} />
           <AddToCart product={product} user={user} />
-          <BuyNowButton classsName="mt-5"/>
+          <HeartButton user={user} productId={product.id} />
           <Separator className="bg-neutral-400 my-5" />
           <div dangerouslySetInnerHTML={{ __html: product.description }} />
         </div>

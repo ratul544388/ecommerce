@@ -8,8 +8,14 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { categories } from "@/constants";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
-export const Catetories = () => {
+export const HeaderCategories = () => {
+  const pathname = usePathname();
+  const router = useRouter();
   const mockCategories = [
     {
       mainCategory: "Man",
@@ -59,27 +65,39 @@ export const Catetories = () => {
   ];
 
   return (
-    <NavigationMenu>
+    <NavigationMenu
+      className={cn("hidden sm:block ml-3", pathname === "/shop" && "hidden")}
+    >
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Shop</NavigationMenuTrigger>
-          <NavigationMenuContent className="p-3 flex gap-5">
-            {mockCategories.map((item, index) => (
-              <div key={index} className="flex flex-col">
+          <NavigationMenuTrigger className="font-semibold text-base">
+            Shop
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="p-5 flex gap-5">
+            {categories.map((item, index) => (
+              <div key={index} className="flex flex-col gap-3">
                 <NavigationMenuLink
+                  href={`/shop?filters=${item.title}`}
+                  onClick={(e) => {
+                    router.push(`/shop?filters=${item.title}`);
+                    e.preventDefault();
+                  }}
                   key={index}
-                  className="hover:text-sky-500"
-                  href="/"
+                  className="hover:text-sky-500 font-bold"
                 >
-                  {item.mainCategory}
+                  {item.title}
                 </NavigationMenuLink>
                 {item.subCategories.map((item, index) => (
                   <NavigationMenuLink
+                    href={`/shop?filters=${item.title}`}
+                    onClick={(e) => {
+                      router.push(`/shop?filters=${item.title}`);
+                      e.preventDefault();
+                    }}
                     className="hover:text-sky-500"
-                    href="/"
                     key={index}
                   >
-                    {item}
+                    {item.title}
                   </NavigationMenuLink>
                 ))}
               </div>
