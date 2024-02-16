@@ -1,8 +1,8 @@
 "use client";
 
-import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
+import { useQueryString } from "@/hooks/use-query-string";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface SelectVariantProps {
   colors: {
@@ -12,17 +12,8 @@ interface SelectVariantProps {
 }
 
 export const SelectColor = ({ colors }: SelectVariantProps) => {
-  const { color, setColor } = useProductSelectionStore();
-  const handleClick = (color: string[]) => {
-    setColor(color);
-  };
-
-  useEffect(() => {
-    if (colors.length === 1) {
-      setColor([colors[0].name, colors[0].hex]);
-    }
-  }, [colors, setColor]);
-
+  const searchParams = useSearchParams();
+  const { handleClick } = useQueryString();
   return (
     <div className="space-y-1 mt-4">
       <h4 className="text-sm font-semibold">
@@ -31,10 +22,10 @@ export const SelectColor = ({ colors }: SelectVariantProps) => {
       <div className="flex items-center gap-3">
         {colors.map(({ name, hex }) => (
           <span
-            onClick={() => handleClick([name, hex])}
+            onClick={() => handleClick({ key: "color", value: name })}
             className={cn(
               "h-8 w-8 rounded-sm cursor-pointer",
-              name === color?.[0] && "ring-2 ring-sky-500"
+              name === searchParams.get("color") && "ring-2 ring-sky-500"
             )}
             key={name}
             style={{ backgroundColor: hex }}

@@ -20,7 +20,7 @@ export const useQueryString = () => {
       { skipEmptyString: true, skipNull: true }
     );
 
-    router.push(url);
+    router.push(url, { scroll: false });
   };
 
   return { handleClick };
