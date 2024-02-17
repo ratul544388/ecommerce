@@ -3,8 +3,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { DataTable } from "../_components/data-tables/data-table";
-import { Productcolumns } from "../_components/data-tables/product-columns";
+import { DataTable } from "../_components/data-table";
+import { Productcolumns } from "./_components/product-columns";
 
 const ProductsPage = async () => {
   const products = await getProducts();

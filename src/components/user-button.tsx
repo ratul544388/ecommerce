@@ -1,20 +1,14 @@
 "use client";
 
-import {
-  ClerkLoaded,
-  ClerkLoading,
-  UserButton as ClerkUserButton,
-  useClerk,
-} from "@clerk/nextjs";
-import { Skeleton } from "./ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useClerk } from "@clerk/nextjs";
 import { User } from "@prisma/client";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { UserAvatar } from "./user-avatar";
 import { Heart, ListOrdered, LogOut, User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { UserAvatar } from "./user-avatar";
 
 export const UserButton = ({
   user,

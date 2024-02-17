@@ -3,7 +3,7 @@
 import { PageNavigations } from "@/components/page-navigations";
 import { Separator } from "@/components/ui/separator";
 import { Product } from "@prisma/client";
-import { Actions } from "../_components/actions";
+import { Actions } from "../../_components/actions";
 import { useState } from "react";
 import { useModal } from "@/hooks/use-modal-store";
 import { pluralize } from "@/lib/utils";

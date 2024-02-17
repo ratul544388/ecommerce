@@ -1,8 +1,6 @@
 import { Hero } from "@/components/hero";
 import { AboutOurCloth } from "./_components/about-our-cloth";
 import { MainCategories } from "./_components/main-categories";
-import { NewArrival } from "./_components/new-arrival";
-
 export default function Home() {
   return (
     <div className="h-full space-y-4 pb-10">

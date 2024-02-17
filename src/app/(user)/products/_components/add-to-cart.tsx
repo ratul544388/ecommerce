@@ -8,7 +8,7 @@ import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
 import { UserWithCart } from "@/types";
 import { Product, Variant } from "@prisma/client";
 import { Minus, Plus } from "lucide-react";
-import { useTransition } from "react";
+import { useMemo, useTransition } from "react";
 import { toast } from "sonner";
 import { uuid } from "uuidv4";
 
@@ -25,19 +25,28 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
   const { size, color, quantity, setQuantity, error, setError } =
     useProductSelectionStore();
 
+  const variants = product.variants;
+
   const handleClick = (qty: number) => {
     setQuantity(quantity + qty);
   };
 
   const variant = getProductVariant({
-    variants: product.variants,
+    variants,
     size,
     color,
   });
 
   const handleAddToCart = () => {
-    if (product.variants.length && !variant) {
-      return setError("Please select a color or size");
+    const hasSize = variants.some((variant) => variant.size);
+    const hasColor = variants.some((variant) => variant.color);
+
+    if ((hasSize && !size) || (hasColor && !color)) {
+      return setError("Please select color or size");
+    }
+
+    if (!variant) {
+      return setError("Stock out");
     }
     setError("");
     const previousCart = cart;

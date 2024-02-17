@@ -19,7 +19,7 @@ import { ColorSchema } from "@/schemas";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
-import { ColorPicker } from "./color-picker";
+import { ColorPicker } from "../products/_components/color-picker";
 
 interface ColorFormProps {}
 

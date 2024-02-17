@@ -99,8 +99,8 @@ export const ProductVariantForm = ({
           ({ success, error }) => {
             if (success) {
               toast.success(success);
-              router.refresh();
               router.push(pathname);
+              router.refresh();
             } else if (error) {
               toast.error(error);
             }

@@ -1,16 +1,16 @@
-import { auth } from "@clerk/nextjs";
+import { currentUser as clerkUser } from "@clerk/nextjs";
 import { db } from "./db";
 
 export async function currentUser() {
-  const { userId } = auth();
+  const self = await clerkUser();
 
-  if (!userId) {
+  if (!self?.id) {
     return null;
   }
 
   const user = await db.user.findUnique({
     where: {
-      userId,
+      userId: self.id,
     },
     include: {
       cartItems: {
@@ -18,7 +18,7 @@ export async function currentUser() {
           product: {
             include: {
               variants: true,
-            }
+            },
           },
           variant: true,
         },

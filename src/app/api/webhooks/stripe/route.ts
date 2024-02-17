@@ -42,6 +42,26 @@ export async function POST(req: Request) {
       });
     }
 
+    const order = await db.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+            variant: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return new NextResponse(`Order not found`, {
+        status: 400,
+      });
+    }
+
     await db.order.update({
       where: {
         id: orderId,
@@ -50,6 +70,36 @@ export async function POST(req: Request) {
         status: "DELIVERY_PENDING",
       },
     });
+
+    for (const orderItem of order.orderItems) {
+      const quantity = orderItem.quantity;
+      await db.product.update({
+        where: {
+          id: orderItem.productId,
+        },
+        data: {
+          quantity: {
+            decrement: quantity,
+          },
+          ...(orderItem.variant
+            ? {
+                variants: {
+                  update: {
+                    where: {
+                      id: orderItem.variant.id,
+                    },
+                    data: {
+                      quantity: {
+                        decrement: quantity,
+                      },
+                    },
+                  },
+                },
+              }
+            : {}),
+        },
+      });
+    }
   } else {
     return new NextResponse(
       `Webhook Error: Unhandled event type ${event.type}`,

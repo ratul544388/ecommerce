@@ -1,5 +1,3 @@
-"use client";
-
 import { User } from "@prisma/client";
 import { AuthButtons } from "../auth-buttons";
 import { CartTrigger } from "../cart/cart-trigger";

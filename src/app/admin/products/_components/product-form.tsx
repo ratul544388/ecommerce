@@ -51,6 +51,11 @@ export const ProductForm = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const leftProduct =
+    product?.variants.reduce((total, product) => {
+      return (total = total - product.quantity);
+    }, product.quantity) || 0;
+
   const form = useForm<z.infer<typeof ProductSchema>>({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
@@ -253,9 +258,12 @@ export const ProductForm = ({
           {product && colors && sizes && (
             <div className="flex flex-col gap-8 md:col-span-2">
               <div className="space-y-3">
-                <h1 className="font-semibold text-xl text-primary">
-                  Product Variants
-                </h1>
+                <h3 className="font-semibold text-xl text-primary">
+                  Product Variants{" "}
+                  <span className="text-muted-foreground text-sm font-normal">
+                    ({leftProduct} left)
+                  </span>
+                </h3>
                 <Separator />
               </div>
               <div className="space-y-3">

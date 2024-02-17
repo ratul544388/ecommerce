@@ -2,7 +2,7 @@ import { PageNavigations } from "@/components/page-navigations";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import React from "react";
-import { OrderItemBox } from "../_components/order-item";
+import { OrderItemBox } from "./_components/order-item";
 
 const MyOrderPage = async () => {
   const user = await currentUser();

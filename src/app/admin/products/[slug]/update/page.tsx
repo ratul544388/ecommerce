@@ -1,5 +1,5 @@
 import { getCategories } from "@/actions/category-action";
-import { ProductForm } from "@/app/admin/_components/product-form";
+import { ProductForm } from "@/app/admin/products/_components/product-form";
 import { PageNavigations } from "@/components/page-navigations";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";

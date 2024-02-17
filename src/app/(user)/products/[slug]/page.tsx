@@ -1,28 +1,19 @@
-import { DynamicBluredImage } from "@/components/dynamic-blured-image";
-import { MaxWidthWrapper } from "@/components/max-width-wrapper";
+import { getProducts } from "@/actions/product-action";
+import { ProductCard } from "@/components/product-card";
 import { Separator } from "@/components/ui/separator";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
-import { AddToCart } from "../../_components/add-to-cart";
-import { HeartButton } from "../../_components/heart-button";
-import { SelectColor } from "../../_components/select-color";
-import { SelectSize } from "../../_components/select-size";
-import { getProducts } from "@/actions/product-action";
-import { ProductCard } from "@/components/product-card";
-import { BuyNowButton } from "./buy-now-button";
+import { AddToCart } from "../_components/add-to-cart";
+import { HeartButton } from "../_components/heart-button";
+import { SelectColor } from "../_components/select-color";
+import { SelectSize } from "../_components/select-size";
 import { PhotoTabs } from "../_components/photo-tabs";
+import { ProductPhoto } from "../_components/product-photo";
 
-const ProductPage = async ({
-  params,
-  searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { [key: string]: string };
-}) => {
+const ProductPage = async ({ params }: { params: { slug: string } }) => {
   const user = await currentUser();
-  const activePhoto = Number(searchParams.photo) || 1;
   const product = await db.product.findUnique({
     where: {
       slug: params.slug,
@@ -39,7 +30,10 @@ const ProductPage = async ({
   const products = await getProducts();
 
   const sizes = product.variants
-    .filter((variant) => variant.size)
+    .filter(
+      (variant, index, self) =>
+        variant.size && index === self.findIndex((i) => i.size === variant.size)
+    )
     .map((item) => item.size) as string[];
 
   const colors = product.variants
@@ -48,20 +42,14 @@ const ProductPage = async ({
         variant.color &&
         index === self.findIndex((i) => i.color[0] === variant.color[0])
     )
-    .map((item) => ({
-      name: item.color[0],
-      hex: item.color[1],
-    }));
+    .map((item) => item.color);
 
   return (
     <div className="max-w-[950px] mx-auto w-full space-y-16">
       <div className="grid sm:grid-cols-2 gap-12">
         <div className="flex flex-col gap-5">
-          <DynamicBluredImage
-            image={product.photos[activePhoto - 1]}
-            className="aspect-[7/8] max-w-full"
-          />
-          <PhotoTabs photos={product.photos} activePhoto={activePhoto} />
+          <ProductPhoto photos={product.photos} />
+          <PhotoTabs photos={product.photos} />
         </div>
         <div>
           <h3

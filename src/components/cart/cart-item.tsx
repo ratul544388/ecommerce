@@ -4,8 +4,8 @@ import {
   updateCart as UpdateCartItem,
   deleteCart as deleteCartAction,
 } from "@/actions/cart-action";
-import { ColorPopover } from "@/app/admin/_components/color-popover";
-import { SizePopover } from "@/app/admin/_components/size-popover";
+import { ColorPopover } from "@/app/admin/products/_components/color-popover";
+import { SizePopover } from "@/app/admin/products/_components/size-popover";
 import { useCartStore } from "@/hooks/use-cart-store";
 import { cn } from "@/lib/utils";
 import { UserWithCart } from "@/types";
