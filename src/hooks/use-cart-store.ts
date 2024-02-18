@@ -2,7 +2,7 @@ import { Product, Variant } from "@prisma/client";
 import { create } from "zustand";
 
 type CartItemType = {
-  id: string;
+  cartId: string;
   product: Product & {
     variants: Variant[];
   };
@@ -13,28 +13,30 @@ type CartItemType = {
 interface CartStore {
   cart: CartItemType[];
   setCart: (cart: CartItemType[]) => void;
-  addToCart: (item: CartItemType) => void;
-  deleteCart: (id: string) => void;
-  updateCart: (productId: string, quantity: number) => void;
+  addToCart: (newItem: CartItemType) => void;
+  updateCart: (cartId: string, quantity: number) => void;
+  deleteCart: (cartId: string) => void;
 }
 
 export const useCartStore = create<CartStore>((set) => ({
   cart: [],
   setCart: (newCart: CartItemType[]) => set({ cart: newCart }),
-  addToCart: (item: CartItemType) =>
-    set((state) => ({ cart: [...state.cart, item] })),
-  deleteCart: (id: string) =>
+  addToCart: (newItem: CartItemType) =>
+    set((state) => {
+      return { cart: [...state.cart, newItem] };
+    }),
+  updateCart: (cartId: string, quantity: number) =>
+    set((state) => {
+      const cartIndex = state.cart.findIndex((item) => item.cartId === cartId);
+      if (cartIndex !== -1) {
+        const updatedCart = [...state.cart];
+        updatedCart[cartIndex].quantity += quantity;
+        return { cart: updatedCart };
+      }
+      return state;
+    }),
+  deleteCart: (cartId: string) =>
     set((state) => ({
-      cart: state.cart.filter((item) => item.id !== id),
-    })),
-  updateCart: (variantId: string, quantity: number) =>
-    set((state) => ({
-      cart: state.cart.map((item) => ({
-        ...item,
-        quantity:
-          item.variant?.id === variantId
-            ? item.quantity + quantity
-            : item.quantity,
-      })),
+      cart: state.cart.filter((item) => item.cartId !== cartId),
     })),
 }));

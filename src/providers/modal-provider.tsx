@@ -11,8 +11,9 @@ import { DeleteSizeModal } from "@/components/modals/delete-size-modal";
 import { SizeModal } from "@/components/modals/size-modal";
 import { CartSheet } from "@/components/sheets/cart-sheet";
 import { UserWithCart } from "@/types";
+import { Category } from "@prisma/client";
 
-export const ModalProvider = ({ user }: { user: UserWithCart | null }) => {
+export const ModalProvider = ({ user, categories }: { user: UserWithCart | null, categories: Category[] }) => {
   return (
     <>
       <CategoryModal />
@@ -26,7 +27,7 @@ export const ModalProvider = ({ user }: { user: UserWithCart | null }) => {
 
       {/* sheet */}
       {user && <CartSheet user={user} />}
-      <MobileSidebar user={user} />
+      <MobileSidebar user={user} categories={categories}/>
     </>
   );
 };

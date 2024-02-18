@@ -52,7 +52,7 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
             ),
           })
         }
-      deleteAction={() =>
+        deleteAction={() =>
           onOpen("deleteCategoryModal", {
             ids: checkedIds,
             title: `Delete Seleted ${pluralize(
@@ -73,6 +73,7 @@ export const CategoryClient = ({ categories }: CategoryClientProps) => {
               key={item.id}
               id={item.id}
               label={item.title}
+              subCategories={item.subCategories}
             />
           </div>
         ))}

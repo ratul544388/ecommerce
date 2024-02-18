@@ -27,6 +27,14 @@ export const adminRoutes = [
     label: "Config",
     children: [
       {
+        label: "Hero",
+        href: "/admin/config/hero",
+      },
+      {
+        label: "Category Hero",
+        href: "/admin/config/category-hero",
+      },
+      {
         label: "Categories",
         href: "/admin/config/categories",
       },

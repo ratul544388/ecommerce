@@ -12,15 +12,15 @@ export const MainCategories = ({}: MainCategoriesProps) => {
     },
     {
       label: "Man",
-      href: "/shop?category=man",
+      href: "/shop?filters=man",
     },
     {
       label: "Woman",
-      href: "/shop?category=woman",
+      href: "/shop?filters=woman",
     },
     {
       label: "Kids",
-      href: "/shop?category=kids",
+      href: "/shop?filters=kids",
     },
   ];
   return (

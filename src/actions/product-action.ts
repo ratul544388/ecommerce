@@ -19,7 +19,7 @@ export const getProducts = async ({
       ...(filters?.length
         ? {
             categories: {
-              hasEvery: filters,
+              hasSome: filters,
             },
           }
         : {}),

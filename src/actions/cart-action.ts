@@ -3,11 +3,13 @@
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 
-export const cartAction = async ({
+export const createCart = async ({
+  cartId,
   productId,
   variantId,
   quantity,
 }: {
+  cartId: string;
   productId: string;
   variantId?: string;
   quantity: number;
@@ -19,45 +21,17 @@ export const cartAction = async ({
       return { error: "Unauthenticated" };
     }
 
-    const existingCart = user.cartItems.find((item) => {
-      return item.variantId === variantId;
-    });
-
-    const updatedUser = await db.user.update({
+    await db.user.update({
       where: {
         id: user.id,
       },
       data: {
         cartItems: {
-          ...(existingCart
-            ? {
-                update: {
-                  where: {
-                    id: existingCart.id,
-                  },
-                  data: {
-                    quantity: existingCart.quantity + quantity,
-                  },
-                },
-              }
-            : {
-                create: {
-                  productId,
-                  quantity,
-                  variantId,
-                },
-              }),
-        },
-      },
-      include: {
-        cartItems: {
-          include: {
-            product: {
-              include: {
-                variants: true,
-              },
-            },
-            variant: true,
+          create: {
+            cartId,
+            productId,
+            quantity,
+            variantId,
           },
         },
       },
@@ -65,7 +39,6 @@ export const cartAction = async ({
 
     return {
       success: "Product added to the cart",
-      cartItems: updatedUser.cartItems,
     };
   } catch (error) {
     console.log(error);
@@ -74,11 +47,11 @@ export const cartAction = async ({
 };
 
 export const updateCart = async ({
-  cartItemId,
-  variantId,
+  cartId,
+  quantity,
 }: {
-  cartItemId: string;
-  variantId: string;
+  cartId: string;
+  quantity: number;
 }) => {
   try {
     const user = await currentUser();
@@ -95,10 +68,12 @@ export const updateCart = async ({
         cartItems: {
           update: {
             where: {
-              id: cartItemId,
+              cartId,
             },
             data: {
-              variantId,
+              quantity: {
+                increment: quantity,
+              },
             },
           },
         },
@@ -122,14 +97,14 @@ export const deleteCart = async (cartItemId: string) => {
       return { error: "Unauthenticated" };
     }
 
-    const updatedUser = await db.user.update({
+    await db.user.update({
       where: {
         id: user.id,
       },
       data: {
         cartItems: {
           delete: {
-            id: cartItemId,
+            cartId: cartItemId,
           },
         },
       },

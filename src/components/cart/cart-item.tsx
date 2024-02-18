@@ -4,8 +4,6 @@ import {
   updateCart as UpdateCartItem,
   deleteCart as deleteCartAction,
 } from "@/actions/cart-action";
-import { ColorPopover } from "@/app/admin/products/_components/color-popover";
-import { SizePopover } from "@/app/admin/products/_components/size-popover";
 import { useCartStore } from "@/hooks/use-cart-store";
 import { cn } from "@/lib/utils";
 import { UserWithCart } from "@/types";
@@ -16,10 +14,11 @@ import { toast } from "sonner";
 import { Photo } from "../photo";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { getFormattedPrice } from "@/helper";
 
 interface CartItemProps {
   cartItem: {
-    id: string;
+    cartId: string;
     product: Product & {
       variants: Variant[];
     };
@@ -32,61 +31,22 @@ interface CartItemProps {
 export const CartItem = ({ cartItem, user }: CartItemProps) => {
   const { product, variant } = cartItem;
   const [_, startTransition] = useTransition();
-  const { setCart, deleteCart } = useCartStore();
-  const [size, setSize] = useState(cartItem.variant?.size as string);
-  const [color, setColor] = useState(cartItem.variant?.color as string[]);
+  const { cart, setCart, deleteCart } = useCartStore();
 
-  const sizes = product.variants
-    .filter(
-      (variant, index, self) =>
-        variant.size && index === self.findIndex((i) => i.size === variant.size)
-    )
-    .map((item) => item.size) as string[];
-
-  const colors = product.variants
-    .filter(
-      (variant, index, self) =>
-        variant.color &&
-        index === self.findIndex((i) => i.color[0] == variant.color[0])
-    )
-    .map((item) => item.color);
-
-  const updateCart = ({
-    currentSize,
-    currentColor,
-  }: {
-    currentSize?: string;
-    currentColor?: string[];
-  }) => {
-    const variant = cartItem.product.variants.find((variant) => {
-      return (
-        variant.color[0] === currentColor?.[0] && variant.size === currentSize
-      );
-    });
-
-    if (variant) {
-      startTransition(() => {
-        UpdateCartItem({ cartItemId: cartItem.id, variantId: variant.id }).then(
-          ({ success, error }) => {
-            if (success) {
-              toast.success(success);
-            } else if (error) {
-              toast.error(error);
-            }
-          }
-        );
-      });
-    }
-  };
+  const price =
+    variant?.offerPrice ||
+    variant?.price ||
+    product.offerPrice ||
+    product.price;
 
   const details = [
     {
       label: "Price",
-      value: `$${product.offerPrice || product.price}`,
+      value: `$${getFormattedPrice(price)}`,
     },
     {
       label: "Size",
-      value: size,
+      value: cartItem.variant?.size,
     },
     {
       label: "Color",
@@ -98,16 +58,16 @@ export const CartItem = ({ cartItem, user }: CartItemProps) => {
     },
     {
       label: "Subtotal",
-      value: `$${cartItem.quantity * product.price}`,
+      value: `$${getFormattedPrice(cartItem.quantity * price)}`,
     },
   ];
 
   const handleDeleteCart = () => {
     const previousCart = user.cartItems;
-    deleteCart(cartItem.id);
+    deleteCart(cartItem.cartId);
     toast.success("Product removed from cart");
     startTransition(() => {
-      deleteCartAction(cartItem.id).then(({ error }) => {
+      deleteCartAction(cartItem.cartId).then(({ error }) => {
         if (error) {
           setCart(previousCart);
           toast.error(error);
@@ -120,7 +80,7 @@ export const CartItem = ({ cartItem, user }: CartItemProps) => {
     <div className="space-y-2 shadow-md rounded-md">
       <div className="flex justify-between p-2 rounded-md bg-neutral-100">
         <h4 className="font-medium">{product.name}</h4>
-        <Photo photo={product.photos[0]} />
+        <Photo photo={product.photos[0]} className="max-w-[80px]" />
       </div>
       {details.map(({ label, value }) => (
         <div

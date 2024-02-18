@@ -54,6 +54,7 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@types/keypress": "^2.0.30",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-color": "^3.0.11",

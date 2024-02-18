@@ -155,7 +155,10 @@ export const ProductForm = ({
                   <CategorySelect
                     value={field.value}
                     onChange={field.onChange}
-                    options={categories.map((item) => item.title)}
+                    options={categories.flatMap((item) => [
+                      item.title,
+                      ...item.subCategories,
+                    ])}
                   />
                 </FormControl>
                 <FormMessage />
@@ -184,7 +187,7 @@ export const ProductForm = ({
             name="offerPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Offer Price</FormLabel>
+                <FormLabel optional>Offer Price</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Enter Product Offer Price"

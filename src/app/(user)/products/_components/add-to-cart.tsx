@@ -1,6 +1,9 @@
 "use client";
 
-import { cartAction } from "@/actions/cart-action";
+import {
+  createCart,
+  updateCart as updateGlobalCart,
+} from "@/actions/cart-action";
 import { Button } from "@/components/ui/button";
 import { getProductVariant } from "@/helper";
 import { useCartStore } from "@/hooks/use-cart-store";
@@ -8,7 +11,7 @@ import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
 import { UserWithCart } from "@/types";
 import { Product, Variant } from "@prisma/client";
 import { Minus, Plus } from "lucide-react";
-import { useMemo, useTransition } from "react";
+import { useTransition } from "react";
 import { toast } from "sonner";
 import { uuid } from "uuidv4";
 
@@ -31,11 +34,12 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
     setQuantity(quantity + qty);
   };
 
-  const variant = getProductVariant({
-    variants,
-    size,
-    color,
-  });
+  const variant =
+    getProductVariant({
+      variants,
+      size,
+      color,
+    }) || null;
 
   const handleAddToCart = () => {
     const hasSize = variants.some((variant) => variant.size);
@@ -45,41 +49,60 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
       return setError("Please select color or size");
     }
 
-    if (!variant) {
+    if (!variant && (hasSize || hasColor)) {
       return setError("Stock out");
     }
     setError("");
+    const cartId = uuid();
     const previousCart = cart;
-    const existingCart = user?.cartItems.find((item) => {
-      return item.variant?.id === variant?.id;
+
+    const existingCart = cart.find((item) => {
+      if (variant) {
+        return (
+          variant.size === item.variant?.size &&
+          variant.color[0] === item.variant?.color[0]
+        );
+      } else {
+        return product.id === item.product.id;
+      }
     });
-    if (existingCart && variant) {
-      updateCart(variant.id, quantity);
+
+    if (existingCart) {
+      updateCart(existingCart.cartId, quantity);
+      toast.success("Product add to cart");
+      startTransition(() => {
+        updateGlobalCart({
+          cartId: existingCart.cartId,
+          quantity,
+        }).then(({ error }) => {
+          if (error) {
+            toast.error(error);
+            setCart(previousCart);
+          }
+        });
+      });
     } else {
       const newItem = {
-        id: uuid(),
+        cartId,
         product,
-        variant: variant || null,
+        variant,
         quantity,
       };
       addToCart(newItem);
-    }
-    setQuantity(1);
-    toast.success("Added to cart");
-    startTransition(() => {
-      cartAction({
-        productId: product.id,
-        variantId: variant?.id,
-        quantity,
-      }).then(({ success, error, cartItems }) => {
-        if (success && cartItems) {
-          setCart(cartItems);
-        } else if (error) {
-          toast.error(error);
-          setCart(previousCart);
-        }
+      startTransition(() => {
+        createCart({
+          cartId,
+          productId: product.id,
+          variantId: variant?.id,
+          quantity,
+        }).then(({ error }) => {
+          if (error) {
+            toast.error(error);
+            setCart(previousCart);
+          }
+        });
       });
-    });
+    }
   };
 
   return (

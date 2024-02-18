@@ -12,8 +12,10 @@ export const getCategories = async () => {
 
 export const createCategory = async ({
   values,
+  subCategories,
 }: {
   values: z.infer<typeof CategorySchema>;
+  subCategories: string[];
 }) => {
   try {
     const validatedFields = CategorySchema.safeParse(values);
@@ -23,7 +25,10 @@ export const createCategory = async ({
     }
 
     await db.category.create({
-      data: values,
+      data: {
+        ...values,
+        subCategories,
+      },
     });
 
     return { success: "Category created" };
@@ -36,9 +41,11 @@ export const createCategory = async ({
 export const updateCategory = async ({
   values,
   categoryId,
+  subCategories,
 }: {
   values: z.infer<typeof CategorySchema>;
   categoryId: string;
+  subCategories: string[];
 }) => {
   try {
     const validatedFields = CategorySchema.safeParse(values);
@@ -51,7 +58,10 @@ export const updateCategory = async ({
       where: {
         id: categoryId,
       },
-      data: values,
+      data: {
+        ...values,
+        subCategories,
+      },
     });
 
     return { success: "Category Updated" };

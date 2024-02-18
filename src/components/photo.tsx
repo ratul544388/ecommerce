@@ -20,7 +20,7 @@ export const Photo = ({
     <div
       onClick={onClick}
       className={cn(
-        "w-full max-w-[80px] overflow-hidden rounded-md relative aspect-square",
+        "w-full overflow-hidden rounded-md relative aspect-square",
         className
       )}
     >

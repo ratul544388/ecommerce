@@ -129,7 +129,7 @@ export const ProductVariantForm = ({
               name="photo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Photo</FormLabel>
+                  <FormLabel optional>Photo</FormLabel>
                   <FormControl>
                     <ImageUpload
                       onUpload={(value) =>
@@ -149,7 +149,7 @@ export const ProductVariantForm = ({
             name="color"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Color</FormLabel>
+                <FormLabel optional>Color</FormLabel>
                 <FormControl>
                   <ColorPopover
                     value={field.value}
@@ -166,7 +166,7 @@ export const ProductVariantForm = ({
             name="size"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Size</FormLabel>
+                <FormLabel optional>Size</FormLabel>
                 <FormControl>
                   <SizePopover
                     value={field.value}
@@ -217,7 +217,7 @@ export const ProductVariantForm = ({
             name="offerPrice"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Offer Price</FormLabel>
+                <FormLabel optional>Offer Price</FormLabel>
                 <FormControl>
                   <Input
                     {...field}

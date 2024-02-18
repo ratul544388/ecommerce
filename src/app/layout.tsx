@@ -7,6 +7,7 @@ import "./globals.css";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { currentUser } from "@/lib/current-user";
+import { db } from "@/lib/db";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,12 +22,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await currentUser();
+  const categories = await db.category.findMany();
   return (
     <ClerkProvider>
       <html lang="en">
         <body className={cn(inter.className, "transition flex flex-col")}>
           <main className="flex-1">{children}</main>
-          <ModalProvider user={user} />
+          <ModalProvider user={user} categories={categories} />
           <ToastProvider />
         </body>
       </html>

@@ -1,12 +1,13 @@
+import { BuyNowButton } from "@/app/(user)/products/_components/buy-now-button";
 import { cn } from "@/lib/utils";
-import { Product } from "@prisma/client";
+import { Product, Variant } from "@prisma/client";
 import Link from "next/link";
-import { FaCartArrowDown } from "react-icons/fa";
 import { DynamicBluredImage } from "./dynamic-blured-image";
-import { buttonVariants } from "./ui/button";
 
 interface ProductCardProps {
-  product: Product;
+  product: Product & {
+    variants: Variant[]
+  };
 }
 
 export const ProductCard = async ({ product }: ProductCardProps) => {
@@ -35,13 +36,7 @@ export const ProductCard = async ({ product }: ProductCardProps) => {
           ${product.offerPrice}
         </p>
       </Link>
-      <Link
-        href="/"
-        className={cn(buttonVariants({ variant: "ordinary" }), "w-full mt-3")}
-      >
-        <FaCartArrowDown className="h-4 w-4 mr-2" />
-        Buy now
-      </Link>
+      <BuyNowButton product={product} classsName="w-full mt-3"/>
     </div>
   );
 };

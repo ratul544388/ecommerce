@@ -33,7 +33,6 @@ export const CategorySchema = z.object({
     .string()
     .min(1, { message: "Category is required" })
     .max(20, { message: "Category is too long" }),
-  subCategories: z.array(z.string()),
 });
 
 export const SizeSchema = z.object({
@@ -57,4 +56,11 @@ export const CheckoutSchema = z.object({
     .string()
     .min(10, { message: "Phone number is too short" })
     .max(12, { message: "Phone number can not be more than 12 digits" }),
+});
+
+export const CategoryHeroSchema = z.object({
+  image: z.string().min(1, { message: "Image is required" }),
+  categories: z
+    .array(z.string())
+    .min(1, { message: "Al least one category is required" }),
 });

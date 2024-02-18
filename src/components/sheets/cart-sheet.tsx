@@ -57,7 +57,7 @@ export const CartSheet = ({ user }: CartSheetProps) => {
           style={{ height: "calc(100vh - 96px)" }}
         >
           {cart.map((item) => (
-            <CartItem user={user} cartItem={item} key={item.id} />
+            <CartItem user={user} cartItem={item} key={item.cartId} />
           ))}
         </ScrollArea>
       ) : (
@@ -72,7 +72,7 @@ export const CartSheet = ({ user }: CartSheetProps) => {
                 onClose();
                 router.push("/shop");
               }}
-              variant="green"
+              variant="ordinary"
             >
               Continue shopping <FaArrowRightLong className="h-4 w-4 ml-2" />{" "}
             </Button>

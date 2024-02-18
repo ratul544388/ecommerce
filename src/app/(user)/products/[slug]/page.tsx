@@ -67,8 +67,8 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
               ${product.offerPrice || product.price}
             </div>
           </div>
-          <SelectSize sizes={sizes} />
-          <SelectColor colors={colors} />
+          {!!sizes.length && <SelectSize sizes={sizes} />}
+          {!!colors.length && <SelectColor colors={colors} />}
           <AddToCart product={product} user={user} />
           <HeartButton user={user} productId={product.id} />
           <Separator className="bg-neutral-400 my-5" />

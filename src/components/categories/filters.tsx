@@ -1,30 +1,19 @@
 "use client";
 
-import { categories } from "@/constants";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Category } from "@prisma/client";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { FilterItem } from "./filter-item";
 
-interface FiltersProps {}
+interface FiltersProps {
+  categories: Category[];
+}
 
-export const Filters = ({}: FiltersProps) => {
-  const pathname = usePathname();
+export const Filters = ({ categories }: FiltersProps) => {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState<string[]>(
     searchParams.get("filters")?.split(" ") || []
   );
-  const router = useRouter();
-
-  useEffect(() => {
-    if (pathname !== "/shop") {
-      return;
-    }
-    if (filters.length) {
-      router.push(`/shop?filters=${filters.join("+")}`);
-    } else {
-      router.push("/shop");
-    }
-  }, [filters, router, pathname]);
 
   return (
     <div className="space-y-3">
@@ -32,16 +21,12 @@ export const Filters = ({}: FiltersProps) => {
         <div key={title} className="space-y-3">
           <FilterItem
             label={title}
-            filters={filters}
-            onChange={(value) => setFilters(value)}
           />
-          {subCategories.map(({ title }) => (
+          {subCategories.map((item) => (
             <FilterItem
-              label={title}
-              filters={filters}
-              key={title}
+              label={item}
+              key={item}
               level={1}
-              onChange={(value) => setFilters(value)}
             />
           ))}
         </div>
