@@ -23,7 +23,7 @@ export const Footer = () => {
           <Mail className="h-5 w-5 text-yellow-600" />
           <p className="font-semibold">GET SPECIAL DISCOUNTS IN YOUR INBOX</p>
         </div>
-        <div className="flex items-center gap-2 mt-3">
+        <div className="flex items-center gap-2 mt-3 max-w-[550px]">
           <div className="relative w-full">
             <Input
               placeholder="Enter email to get offers, discount and more. "
@@ -76,7 +76,7 @@ export const FooterWrapper = ({
   className?: string;
 }) => {
   return (
-    <div className={cn("w-full bg-neutral-800 p-10 sm:px-20", className)}>
+    <div className={cn("w-full bg-neutral-800 py-10 px-5 sm:px-20", className)}>
       <div className="max-w-screen-lg mx-auto">{children}</div>
     </div>
   );

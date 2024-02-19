@@ -6,9 +6,19 @@ import * as z from "zod";
 
 export const getProducts = async ({
   filters,
-  take = 10,
+  take = 12,
   page = 1,
-}: { filters?: string[]; take?: number; page?: number } = {}) => {
+  q,
+  productId,
+  categories,
+}: {
+  filters?: string[];
+  take?: number;
+  page?: number;
+  q?: string;
+  productId?: string;
+  categories?: string[];
+} = {}) => {
   const skip = (page - 1) * take;
 
   const products = await db.product.findMany({
@@ -16,10 +26,26 @@ export const getProducts = async ({
       variants: true,
     },
     where: {
+      ...(productId ? { id: { not: productId } } : {}),
+      ...(categories
+        ? {
+            categories: {
+              hasSome: categories,
+            },
+          }
+        : {}),
       ...(filters?.length
         ? {
             categories: {
               hasSome: filters,
+            },
+          }
+        : {}),
+      ...(q
+        ? {
+            name: {
+              contains: q,
+              mode: "insensitive",
             },
           }
         : {}),

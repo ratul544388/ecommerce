@@ -1,54 +1,45 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
-import { ArrowLeft, Search, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { ArrowLeft, SearchIcon } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../ui/button";
-import { SearchInput } from "./search-input";
-import { useOnClickOutside } from "@/hooks/use-on-click-outside";
+import { Search } from "./search";
+import { motion } from "framer-motion";
 
 interface MobileSearchProps {}
 
 export const MobileSearch = ({}: MobileSearchProps) => {
   const [open, setOpen] = useState(false);
-  const animation = useAnimation();
-  const Icon = open ? X : Search;
-  const containerRef = useRef(null);
-
-  useOnClickOutside(containerRef, () => open && handleClick());
-
-  const handleClick = () => {
-    if (open) {
-      setOpen(false);
-      animation.start("hidden");
-    } else {
-      setOpen(true);
-      animation.start("visible");
-    }
-  };
 
   return (
     <div className="md:hidden ml-auto">
       {!open && (
-        <Button onClick={handleClick} variant="ghost" size="icon">
-          <Icon className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
+        <Button onClick={() => setOpen(true)} variant="ghost" size="icon">
+          <SearchIcon className="h-5 w-5 text-muted-foreground hover:text-primary transition-colors" />
         </Button>
       )}
-      <motion.div
-        ref={containerRef}
-        variants={{
-          hidden: { y: -70, opacity: 0, pointerEvents: "none" },
-          visible: { y: 0, opacity: 1, pointerEvents: "auto" },
-        }}
-        initial="hidden"
-        animate={animation}
-        className="fixed flex items-center gap-2 top-[70px] inset-x-0 bg-secondary p-3"
-      >
-        <Button onClick={handleClick} variant="ghost" size="icon" className="hover:bg-gray-200 text-muted-foreground">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <SearchInput focus={open} />
-      </motion.div>
+      {open && (
+        <motion.div
+          variants={{ hidden: { height: 0 }, visible: { height: 60 } }}
+          initial="hidden"
+          animate={open ? "visible" : "hidden"}
+          className="fixed flex items-center gap-3 top-[70px] inset-x-0 bg-secondary px-4"
+        >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="bg-background rounded-full hover:bg-background/90 min-w-9 text-muted-foreground hover:text-foreground"
+            onClick={() => setOpen(false)}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <Search
+            focus
+            onCloseMobileSearch={() => setOpen(false)}
+            className="w-full"
+          />
+        </motion.div>
+      )}
     </div>
   );
 };

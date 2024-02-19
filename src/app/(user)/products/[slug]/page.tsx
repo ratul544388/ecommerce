@@ -27,7 +27,10 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     notFound();
   }
 
-  const products = await getProducts();
+  const products = await getProducts({
+    productId: product.id,
+    categories: product.categories,
+  });
 
   const sizes = product.variants
     .filter(

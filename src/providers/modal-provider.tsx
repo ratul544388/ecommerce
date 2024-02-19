@@ -8,6 +8,7 @@ import { ColorModal } from "@/components/modals/color-modal";
 import { DeleteCategoryModal } from "@/components/modals/delete-category-modal";
 import { DeleteColorsModal } from "@/components/modals/delete-colors-modal";
 import { DeleteSizeModal } from "@/components/modals/delete-size-modal";
+import { DeliverOrderModal } from "@/components/modals/deliver-order-modal";
 import { SizeModal } from "@/components/modals/size-modal";
 import { CartSheet } from "@/components/sheets/cart-sheet";
 import { UserWithCart } from "@/types";
@@ -24,6 +25,7 @@ export const ModalProvider = ({ user, categories }: { user: UserWithCart | null,
       <DeleteSizeModal />
       <CheckoutModal user={user} />
       <CancelOrderModal />
+      <DeliverOrderModal/>
 
       {/* sheet */}
       {user && <CartSheet user={user} />}

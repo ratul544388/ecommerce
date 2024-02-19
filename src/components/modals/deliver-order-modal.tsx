@@ -7,36 +7,34 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Modal } from "./modal";
-import { cancelOrder } from "@/actions/order-action";
+import { deliverOrder } from "@/actions/order-action";
 
-export const CancelOrderModal = () => {
+export const DeliverOrderModal = () => {
   const { isOpen, type, data, onClose } = useModal();
-  const [isPending, startTransition] = useTransition();
-  const open = isOpen && type === "cancelOrderModal";
-  const { title } = data;
-  const router = useRouter();
-
+  const open = isOpen && type === "deliverOrderModal";
   const { id } = data;
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  const onCancel = () => {
+  function onDelivered() {
     startTransition(() => {
-      cancelOrder(id as string).then(({ success, error }) => {
+      deliverOrder(id as string).then(({ error, success }) => {
         if (success) {
           toast.success(success);
-          router.refresh();
           onClose();
+          router.refresh();
         } else {
           toast.error(error);
         }
       });
-  });
-  };
+    });
+  }
 
   return (
     <Modal
       open={open}
-      title="Cancel Order"
-      description="Are you sure you want to cancel the order? This action cannot be undone."
+      title="Order mask as Delivered"
+      description="Are you sure you want to mark the order as delivered. This action cannot be undone"
       disabled={isPending}
       className="max-w-[400px]"
     >
@@ -44,7 +42,7 @@ export const CancelOrderModal = () => {
         <Button onClick={onClose} disabled={isPending} variant="ghost">
           Cancel
         </Button>
-        <Button disabled={isPending} onClick={onCancel} variant="destructive">
+        <Button disabled={isPending} onClick={onDelivered}>
           Confirm
         </Button>
       </div>

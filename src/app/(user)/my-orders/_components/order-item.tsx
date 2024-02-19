@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { Order, OrderItem, Product, Variant } from "@prisma/client";
 import { format } from "date-fns";
 import { Bike } from "lucide-react";
+import { getFormattedText } from "@/helper";
+import { OrderCellAction } from "@/app/admin/orders/_components/order-cell-action";
 
 interface OrderItemProps {
   order: Order & {
@@ -16,9 +18,10 @@ interface OrderItemProps {
       variant: Variant | null;
     })[];
   };
+  isAdmin?: boolean;
 }
 
-export const OrderItemBox = ({ order }: OrderItemProps) => {
+export const OrderItemBox = ({ order, isAdmin }: OrderItemProps) => {
   const { onOpen } = useModal();
 
   return (
@@ -27,28 +30,33 @@ export const OrderItemBox = ({ order }: OrderItemProps) => {
       className="bg-background rounded-lg border shadow-lg p-4 flex flex-col gap-2 text-sm"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold">Order ID: {order.id.slice(-6)}</h3>
-        <p
-          className={cn(
-            (order.status === "DELIVERY_PENDING" ||
-              order.status === "DELIVERED") &&
-              "text-green-600",
-            order.status === "WAITING_FOR_PAYMENT" && "text-orange-500",
-            order.status === "CANCELED" && "text-red-600",
-            "font-medium capitalize"
-          )}
-        >
-          {order.status.replace(/_/g, " ").toLowerCase()}
-        </p>
+        <h3 className="text-base font-bold text-muted-foreground">
+          Order No: <span className="text-foreground">{order.orderNo}</span>
+        </h3>
+        <div className="flex items-center gap-3">
+          <p
+            className={cn(
+              (order.status === "DELIVERY_PENDING" ||
+                order.status === "DELIVERED") &&
+                "text-green-600",
+              order.status === "WAITING_FOR_PAYMENT" && "text-orange-500",
+              order.status === "CANCELED" && "text-red-600",
+              "font-medium capitalize"
+            )}
+          >
+            {getFormattedText(order.status)}
+          </p>
+          <OrderCellAction order={order} />
+        </div>
       </div>
       <div
         className="flex flex-col gap-x-6 gap-y-2 flex-wrap"
         style={{ maxWidth: "calc(100% - 100px)" }}
       >
         <p className="text-muted-foreground text-sm">
-          Order date:{" "}
+          Ordered At:{" "}
           <span className="text-foreground font-semibold">
-            {format(order.createdAt, "dd MMM yyyy")}
+            {format(order.createdAt, "dd MMM yy, hh:mm a")}
           </span>
         </p>
         {order.status === "DELIVERY_PENDING" && (
@@ -97,7 +105,7 @@ export const OrderItemBox = ({ order }: OrderItemProps) => {
           </div>
         ))}
       </div>
-      {order.status === "WAITING_FOR_PAYMENT" && (
+      {order.status === "WAITING_FOR_PAYMENT" && !isAdmin && (
         <div className="flex gap-3 ml-auto mt-3">
           <Button
             onClick={() => onOpen("cancelOrderModal", { orderId: order.id })}

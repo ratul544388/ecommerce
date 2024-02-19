@@ -11,6 +11,8 @@ export type ModalType =
   | "deleteSizeModal"
   | "checkoutModal"
   | "cancelOrderModal"
+  | "deliverOrderModal"
+  | "cancelOrderModal"
 
 interface ModalData {
   user?: User | null;

@@ -10,11 +10,16 @@ export const CategoryHero = async ({
   categories: string[];
 }) => {
   const products = await db.product.findMany({
-    where: {},
+    where: {
+      categories: {
+        hasSome: categories,
+      },
+    },
+    take: 12
   });
 
   return (
-    <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       <Link
         href={`/shop?filters=${categories.join("+")}`}
         className="col-span-2 row-span-2"
@@ -23,7 +28,7 @@ export const CategoryHero = async ({
       </Link>
       {products.map((product) => (
         <Link
-          href={`/shop?filters=${product.categories.join("+")}`}
+          href={`/products/${product.slug}`}
           key={product.id}
           className="relative"
         >

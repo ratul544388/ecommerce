@@ -6,8 +6,8 @@ import { HeaderCategories } from "../categories/header-categories";
 import { MobileSidebarTrigger } from "../mobile-sidebar-trigger";
 import { UserButton } from "../user-button";
 import { WishListButton } from "../wishlist/wish-list-button";
-import { DesktopSearch } from "./desktop-search";
 import { Logo } from "./logo";
+import { Search } from "./search";
 import { MobileSearch } from "./mobile-search";
 
 interface HeaderProps {
@@ -23,7 +23,7 @@ export const Header = async ({ user }: HeaderProps) => {
         <Logo />
       </div>
       <HeaderCategories categories={categories} />
-      <DesktopSearch />
+      <Search className="hidden md:block"/>
       <MobileSearch />
       <div className="flex items-center gap-3">
         {!user && <AuthButtons />}

@@ -20,6 +20,36 @@ export type CheckoutType = {
   address: string;
 };
 
+export const getOrders = async ({
+  userId,
+  take,
+  page = 1,
+}: { userId?: string; take?: number; page?: number } = {}) => {
+  const skip = (page - 1) * (take || 0);
+  const orders = await db.order.findMany({
+    where: {
+      ...(userId
+        ? {
+            userId,
+          }
+        : {}),
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+          variant: true,
+        },
+      },
+      user: true,
+    },
+    skip,
+    ...(take ? { take } : {}),
+  });
+
+  return orders;
+};
+
 export const checkout = async ({
   orderItems,
   clearCart = "false",
@@ -70,8 +100,11 @@ export const checkout = async ({
     quantity: item.quantity,
   }));
 
+  const orderNo = (await db.order.count()) + 1;
+
   const order = await db.order.create({
     data: {
+      orderNo,
       status: "WAITING_FOR_PAYMENT",
       userId: user.id,
       orderItems: {
@@ -143,21 +176,20 @@ export const cancelOrder = async (orderId: string) => {
       return { error: "Unauthenticated" };
     }
 
-    const order = await db.order.findUnique({
+    const orderBy = await db.order.findUnique({
       where: {
         id: orderId,
       },
+      include: {
+        user: true,
+      },
     });
 
-    if (order?.status === "DELIVERED") {
-      return {
-        error: "You cannot cancel the order. Order has already been delivered",
-      };
-    }
+    const userId = user.isAdmin ? orderBy?.userId as string : user.id
 
     await db.user.update({
       where: {
-        id: user.id,
+        id: userId,
       },
       data: {
         orders: {
@@ -175,6 +207,31 @@ export const cancelOrder = async (orderId: string) => {
 
     return { success: "Order canceled" };
   } catch (error) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const deliverOrder = async (orderId: string) => {
+  try {
+    const user = await currentUser();
+
+    if (!user?.isAdmin) {
+      return { error: "Permission denied" };
+    }
+
+    await db.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        status: "DELIVERED",
+      },
+    });
+
+    return { success: "Order mark as delivered" };
+  } catch (error) {
+    console.log(error);
     return { error: "Something went wrong" };
   }
 };

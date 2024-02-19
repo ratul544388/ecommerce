@@ -2,10 +2,10 @@
 
 import { useSheetStore } from "@/hooks/use-sheet-store";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
 import { ChevronRight, LucideIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 
 interface SidebarItemProps {
   label: string;
@@ -42,7 +42,8 @@ export const SidebarItem = ({
       role="button"
       className={cn("flex select-none flex-col font-medium text-foreground/70")}
     >
-      <div
+      <ItemWrapper
+        href={href}
         onClick={() => handleClick(href)}
         className={cn(
           "flex items-center gap-3 hover:bg-neutral-200 py-2 px-3 rounded-md",
@@ -59,34 +60,60 @@ export const SidebarItem = ({
             )}
           />
         )}
-      </div>
+      </ItemWrapper>
       {children && (
-        <motion.div
-          variants={{
-            hidden: {
-              pointerEvents: "none",
-              height: 0,
-            },
-            visible: {
-              pointerEvents: "auto",
-              height: "auto",
-            },
-          }}
-          initial="hidden"
-          animate={open ? "visible" : "hidden"}
-          className="overflow-hidden"
+        <div
+          className={cn(
+            "h-0 overflow-hidden flex flex-col transition-all duration-300 pointer-events-none"
+          )}
+          style={
+            open
+              ? { height: `${children.length * 40}px`, pointerEvents: "auto" }
+              : { height: "0px", pointerEvents: "none" }
+          }
         >
           {children.map(({ label, href }) => (
-            <div
+            <ItemWrapper
+              href={href}
               onClick={() => handleClick(href)}
               key="label"
-              className="ml-6 px-3 py-2 hover:bg-neutral-200 rounded-md cursor-pointer"
+              className={cn(
+                `ml-6 px-3 h-10 flex items-center hover:bg-neutral-200 rounded-md cursor-pointer`,
+                pathname === href &&
+                  "bg-background text-primary hover:bg-background"
+              )}
             >
               {label}
-            </div>
+            </ItemWrapper>
           ))}
-        </motion.div>
+        </div>
       )}
     </div>
+  );
+};
+
+const ItemWrapper = ({
+  href,
+  className,
+  children,
+  onClick,
+}: {
+  href?: string;
+  className?: string;
+  children: ReactNode;
+  onClick?: () => void;
+}) => {
+  return (
+    <>
+      {href ? (
+        <Link href={href} className={cn(className)}>
+          {children}
+        </Link>
+      ) : (
+        <div onClick={() => onClick?.()} className={cn(className)}>
+          {children}
+        </div>
+      )}
+    </>
   );
 };

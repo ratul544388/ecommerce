@@ -98,8 +98,9 @@ model Size {
 }
 
 model Order {
-  id     String      @id @default(auto()) @map("_id") @db.ObjectId
-  status OrderStatus
+  id      String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderNo Int
+  status  OrderStatus
 
   createdAt DateTime @default(now())
 
