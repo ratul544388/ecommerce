@@ -12,7 +12,7 @@ export default async function Home() {
       <Hero />
       <div className="h-full space-y-5 pt-[50vh]">
         <MainCategories />
-        <NewArrival />
+        {/* <NewArrival /> */}
         <div className="max-w-screen-lg mx-auto flex flex-col gap-20 pt-14">
           {categoryHeros.map(({ id, image, categories }) => (
             <CategoryHero key={id} image={image} categories={categories} />

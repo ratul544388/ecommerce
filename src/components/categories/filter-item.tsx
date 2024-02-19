@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { Checkbox } from "../ui/checkbox";
+import { useSheetStore } from "@/hooks/use-sheet-store";
 
 interface FilterItemProps {
   label: string;
@@ -13,6 +14,7 @@ interface FilterItemProps {
 export const FilterItem = ({ label, level = 0 }: FilterItemProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { onClose } = useSheetStore();
   const isChecked = useMemo(() => {
     return !!searchParams.get("filters")?.split(" ").includes(label);
   }, [label, searchParams]);
@@ -30,6 +32,7 @@ export const FilterItem = ({ label, level = 0 }: FilterItemProps) => {
     } else {
       router.push("/shop");
     }
+    onClose();
   };
 
   return (

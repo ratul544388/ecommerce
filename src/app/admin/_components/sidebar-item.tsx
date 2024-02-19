@@ -4,7 +4,7 @@ import { useSheetStore } from "@/hooks/use-sheet-store";
 import { cn } from "@/lib/utils";
 import { ChevronRight, LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 
 interface SidebarItemProps {
@@ -26,16 +26,16 @@ export const SidebarItem = ({
   const [open, setOpen] = useState(false);
   const { onClose } = useSheetStore();
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleClick = (href?: string) => {
+    console.log(href);
     if (href) {
-      router.push(href);
       onClose();
     } else {
       setOpen(!open);
     }
   };
+
   return (
     <div
       key={label}
@@ -101,16 +101,16 @@ const ItemWrapper = ({
   href?: string;
   className?: string;
   children: ReactNode;
-  onClick?: () => void;
+  onClick: () => void;
 }) => {
   return (
     <>
       {href ? (
-        <Link href={href} className={cn(className)}>
+        <Link onClick={onClick} href={href} className={cn(className)}>
           {children}
         </Link>
       ) : (
-        <div onClick={() => onClick?.()} className={cn(className)}>
+        <div onClick={onClick} className={cn(className)}>
           {children}
         </div>
       )}
