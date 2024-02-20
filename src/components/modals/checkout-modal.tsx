@@ -67,6 +67,7 @@ export const CheckoutModal = ({ user }: { user: User | null }) => {
       open={isOpen && type === "checkoutModal"}
       title="Confirm Order"
       description="Enter your address and phone and place the order"
+      disabled={isPending}
     >
       <Form {...form}>
         <form

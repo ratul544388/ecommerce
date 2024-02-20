@@ -57,7 +57,9 @@ export async function POST(req: Request) {
     await db.user.create({
       data: {
         userId: payload.data.id,
-        name: `${payload.data.first_name} ${payload.data.last_name}`,
+        name: `${payload.data.first_name || "Anonymous"} ${
+          payload.data.last_name || ""
+        }`,
         email: payload.data.email_addresses[0].email_address,
         imageUrl: payload.data.image_url,
       },

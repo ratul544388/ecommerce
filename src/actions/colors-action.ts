@@ -3,6 +3,7 @@ import * as z from "zod";
 import { db } from "@/lib/db";
 import { ColorSchema } from "@/schemas";
 import { pluralize } from "@/lib/utils";
+import { currentUser } from "@/lib/current-user";
 
 export const createColor = async (values: z.infer<typeof ColorSchema>) => {
   try {
@@ -11,6 +12,12 @@ export const createColor = async (values: z.infer<typeof ColorSchema>) => {
       return {
         error: "Invalid fields",
       };
+    }
+
+    const user = await currentUser();
+
+    if (!user) {
+      return { error: "Permission denied" };
     }
 
     const existingName = await db.color.findUnique({
@@ -57,6 +64,13 @@ export const updateColor = async ({
         error: "Invalid fields",
       };
     }
+
+    const user = await currentUser();
+
+    if (!user) {
+      return { error: "Permission denied" };
+    }
+
     await db.color.update({
       where: {
         id: colorId,
@@ -73,6 +87,13 @@ export const updateColor = async ({
 
 export const deleteColors = async (colorIds: string[]) => {
   try {
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
+    }
+    
     await db.color.deleteMany({
       where: {
         id: {

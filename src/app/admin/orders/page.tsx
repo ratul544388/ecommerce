@@ -1,22 +1,24 @@
 import { getOrders } from "@/actions/order-action";
-import { PageNavigations } from "@/components/page-navigations";
+import { Pagination } from "@/components/pagination";
+import { db } from "@/lib/db";
 import { DataTable } from "../_components/data-table";
 import { OrderColumns } from "./_components/order-columns";
 
-const OrdersPage = async () => {
-  const orders = await getOrders();
+const OrdersPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string };
+}) => {
+  const page = Number(searchParams.page) || 1;
+  const totalOrders = await db.order.count();
+  const take = 10;
+  const orders = await getOrders({ page, take });
+  const maxPages = Math.ceil(totalOrders / take);
   return (
-    <div className="space-y-4">
-      <PageNavigations
-        links={[
-          {
-            label: "Dashboard",
-            href: "/admin/dashboard",
-          },
-        ]}
-        pageLabel="Orders"
-      />
+    <div className="flex flex-col gap-4">
+      <h3 className="text-2xl font-bold">Orders</h3>
       <DataTable columns={OrderColumns} data={orders} />
+      <Pagination currentPage={page} maxPages={maxPages} />
     </div>
   );
 };

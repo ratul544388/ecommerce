@@ -1,15 +1,16 @@
 "use client";
 
-import { useModal } from "@/hooks/use-modal-store";
+import { OrderCellAction } from "@/app/admin/orders/_components/order-cell-action";
 import { Photo } from "@/components/photo";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { getFormattedText, getProductPrice } from "@/helper";
+import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
+import { UserProfile } from "@clerk/nextjs";
 import { Order, OrderItem, Product, Variant } from "@prisma/client";
 import { format } from "date-fns";
 import { Bike } from "lucide-react";
-import { getFormattedText } from "@/helper";
-import { OrderCellAction } from "@/app/admin/orders/_components/order-cell-action";
 
 interface OrderItemProps {
   order: Order & {
@@ -46,7 +47,7 @@ export const OrderItemBox = ({ order, isAdmin }: OrderItemProps) => {
           >
             {getFormattedText(order.status)}
           </p>
-          <OrderCellAction order={order} />
+          {isAdmin && <OrderCellAction order={order} />}
         </div>
       </div>
       <div
@@ -94,7 +95,16 @@ export const OrderItemBox = ({ order, isAdmin }: OrderItemProps) => {
               )}
             </div>
             <div className="space-y-1 ml-auto">
-              <h4 className="font-bold">${item.product.price}</h4>
+              <p className="text-muted-foreground text-sm">
+                Price:{" "}
+                <span className="text-foreground font-semibold">
+                  $
+                  {getProductPrice({
+                    product: item.product,
+                    variant: item?.variant,
+                  })}
+                </span>
+              </p>
               <p className="text-muted-foreground text-sm">
                 Qty:{" "}
                 <span className="text-foreground font-semibold">

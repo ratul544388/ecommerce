@@ -1,5 +1,6 @@
 "use server";
 
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { ProductSchema } from "@/schemas";
 import * as z from "zod";
@@ -20,7 +21,6 @@ export const getProducts = async ({
   categories?: string[];
 } = {}) => {
   const skip = (page - 1) * take;
-
   const products = await db.product.findMany({
     include: {
       variants: true,
@@ -50,7 +50,10 @@ export const getProducts = async ({
           }
         : {}),
     },
-    ...(take ? { take } : {}),
+    orderBy: {
+      createdAt: "desc",
+    },
+    take,
     skip,
   });
 
@@ -62,6 +65,12 @@ export const createProduct = async (values: z.infer<typeof ProductSchema>) => {
     const validatedFields = ProductSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
+    }
+
+    const user = await currentUser();
+
+    if (!user?.isAdmin) {
+      return { error: "Permission denied" };
     }
 
     const slug = values.name.replace(/\s+/g, "-").toLowerCase();
@@ -91,6 +100,12 @@ export const updateProduct = async ({
     const validatedFields = ProductSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
+    }
+
+    const user = await currentUser();
+
+    if (!user?.isAdmin) {
+      return { error: "Permission denied" };
     }
 
     const slug = values.name.replace(/\s+/g, "-").toLowerCase();

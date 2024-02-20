@@ -43,6 +43,9 @@ export const getOrders = async ({
       },
       user: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
     skip,
     ...(take ? { take } : {}),
   });
@@ -185,7 +188,7 @@ export const cancelOrder = async (orderId: string) => {
       },
     });
 
-    const userId = user.isAdmin ? orderBy?.userId as string : user.id
+    const userId = user.isAdmin ? (orderBy?.userId as string) : user.id;
 
     await db.user.update({
       where: {

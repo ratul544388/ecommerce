@@ -40,7 +40,7 @@ const Page = async ({ params }: { params: { orderId: string } }) => {
         pageLabel={`Order No: ${order.orderNo}`}
       />
       <Separator />
-      <OrderItemBox order={order} />
+      <OrderItemBox order={order} isAdmin />
     </div>
   );
 };

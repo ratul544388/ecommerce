@@ -4,6 +4,7 @@ import * as z from "zod";
 
 import { db } from "@/lib/db";
 import { CategorySchema } from "@/schemas";
+import { currentUser } from "@/lib/current-user";
 
 export const getCategories = async () => {
   const categories = await db.category.findMany();
@@ -22,6 +23,12 @@ export const createCategory = async ({
 
     if (!validatedFields.success) {
       return { error: "Invalid category" };
+    }
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
     }
 
     await db.category.create({
@@ -54,6 +61,12 @@ export const updateCategory = async ({
       return { error: "Invalid category" };
     }
 
+    const user = await currentUser();
+
+    if (!user) {
+      return { error: "Permission denied" };
+    }
+
     await db.category.update({
       where: {
         id: categoryId,
@@ -73,6 +86,12 @@ export const updateCategory = async ({
 
 export const deleteCategory = async (categoryIds: string[]) => {
   try {
+    const user = await currentUser();
+
+    if (!user) {
+      return { error: "Permission denied" };
+    }
+
     await db.category.deleteMany({
       where: {
         id: {

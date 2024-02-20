@@ -1,4 +1,5 @@
 "use server";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { variantSchema } from "@/schemas";
 import * as z from "zod";
@@ -14,6 +15,12 @@ export const createProductVariant = async ({
     const validatedFields = variantSchema.safeParse(values);
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
+    }
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
     }
 
     const { color, size, offerPrice, price } = values;
@@ -96,6 +103,12 @@ export const updateProductVariant = async ({
       return { error: "Invalid fields" };
     }
 
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
+    }
+
     const { color, size, offerPrice, price } = values;
 
     if (price && price === offerPrice) {
@@ -173,6 +186,13 @@ export const deleteProductVariant = async ({
   variantId: string;
 }) => {
   try {
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
+    }
+
     await db.variant.delete({
       where: {
         id: variantId,

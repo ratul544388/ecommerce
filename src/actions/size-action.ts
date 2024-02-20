@@ -4,6 +4,7 @@ import * as z from "zod";
 
 import { db } from "@/lib/db";
 import { SizeSchema } from "@/schemas";
+import { currentUser } from "@/lib/current-user";
 
 export const createSize = async (values: z.infer<typeof SizeSchema>) => {
   try {
@@ -11,6 +12,12 @@ export const createSize = async (values: z.infer<typeof SizeSchema>) => {
 
     if (!validatedFields.success) {
       return { error: "Invalid fields" };
+    }
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
     }
 
     await db.size.create({
@@ -38,6 +45,12 @@ export const updateSize = async ({
       return { error: "Invalid size" };
     }
 
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
+    }
+
     await db.size.update({
       where: {
         id: sizeId,
@@ -54,6 +67,13 @@ export const updateSize = async ({
 
 export const deleteSizes = async (sizeIds: string[]) => {
   try {
+
+    const user = await currentUser();
+
+    if(!user) {
+      return {error: "Permission denied"};
+    }
+    
     await db.size.deleteMany({
       where: {
         id: {
