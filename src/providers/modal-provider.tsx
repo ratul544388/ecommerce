@@ -1,6 +1,6 @@
 "use client";
 
-import { MobileSidebar } from "@/app/admin/_components/mobile-sidebar";
+import { MobileSidebar } from "@/components/mobile-sidebar";
 import { CancelOrderModal } from "@/components/modals/cancel-order-modal";
 import { CategoryModal } from "@/components/modals/category-modal";
 import { CheckoutModal } from "@/components/modals/checkout-modal";
@@ -12,7 +12,6 @@ import { DeliverOrderModal } from "@/components/modals/deliver-order-modal";
 import { SizeModal } from "@/components/modals/size-modal";
 import { CartSheet } from "@/components/sheets/cart-sheet";
 import { UserWithCart } from "@/types";
-import { UserProfile } from "@clerk/nextjs";
 import { Category } from "@prisma/client";
 
 export const ModalProvider = ({

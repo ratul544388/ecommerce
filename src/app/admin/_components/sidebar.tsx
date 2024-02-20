@@ -7,14 +7,14 @@ import { UserButton } from "@clerk/nextjs";
 
 export const Sidebar = () => {
   return (
-    <div className="fixed hidden md:flex flex-col h-full inset-y-0 left-0 w-[260px] border-r bg-secondary/70 py-5 px-6 space-y-6">
+    <aside className="sticky z-20 hidden md:flex flex-col h-screen inset-y-0 top-0 left-0 min-w-[260px] border-r bg-neutral-100 py-5 px-6 space-y-6">
       <Logo />
       <div className="flex-1">
         {adminRoutes.map((item) => (
           <SidebarItem key={item.label} {...item} />
         ))}
       </div>
-      <UserButton />
-    </div>
+      <UserButton afterSignOutUrl="/" />
+    </aside>
   );
 };

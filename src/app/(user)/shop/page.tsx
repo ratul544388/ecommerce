@@ -1,10 +1,10 @@
 import { getProducts } from "@/actions/product-action";
 import { Filters } from "@/components/categories/filters";
 import { EmptyState } from "@/components/empty-state";
-import { Pagination } from "@/components/pagination";
-import { ProductCard } from "@/components/product-card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
+import { Products } from "../_components/products";
 import { PageFilters } from "./_components/page-filters";
 
 const Page = async ({
@@ -12,14 +12,10 @@ const Page = async ({
 }: {
   searchParams: { [key: string]: string };
 }) => {
+  const user = await currentUser();
   const filters = searchParams.filters?.split(" ") || [];
-  const page = Number(searchParams.page) || 1;
-  const take = 12;
-  const products = await getProducts({ filters, take, page });
+  const { products, hasMore } = await getProducts({ filters });
   const categories = await db.category.findMany();
-
-  const totalProducts = await db.product.count();
-  const maxPages = Math.ceil(totalProducts / take);
 
   return (
     <>
@@ -33,11 +29,11 @@ const Page = async ({
           <PageFilters filters={filters} />
         </div>
         {products.length ? (
-          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-5">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          <Products
+            initialProducts={products}
+            initialHasMore={hasMore}
+            user={user}
+          />
         ) : (
           <EmptyState
             title="No results found"
@@ -46,7 +42,6 @@ const Page = async ({
             actionUrl="/shop"
           />
         )}
-        <Pagination maxPages={maxPages} currentPage={page} />
       </div>
     </>
   );

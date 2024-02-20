@@ -1,5 +1,4 @@
 import { getProducts } from "@/actions/product-action";
-import { ProductCard } from "@/components/product-card";
 import { Separator } from "@/components/ui/separator";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
@@ -11,6 +10,7 @@ import { SelectColor } from "../_components/select-color";
 import { SelectSize } from "../_components/select-size";
 import { PhotoTabs } from "../_components/photo-tabs";
 import { ProductPhoto } from "../_components/product-photo";
+import { ProductCard } from "../../_components/product-card";
 
 const ProductPage = async ({ params }: { params: { slug: string } }) => {
   const user = await currentUser();
@@ -27,7 +27,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     notFound();
   }
 
-  const products = await getProducts({
+  const { products } = await getProducts({
     productId: product.id,
     categories: product.categories,
   });
@@ -51,7 +51,10 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     <div className="max-w-[950px] mx-auto w-full space-y-16">
       <div className="grid sm:grid-cols-2 gap-12">
         <div className="flex flex-col gap-5">
-          <ProductPhoto photos={product.photos} />
+          <div className="relative">
+            <ProductPhoto photos={product.photos} />
+            <HeartButton productId={product.id} user={user} />
+          </div>
           <PhotoTabs photos={product.photos} />
         </div>
         <div>
@@ -73,7 +76,6 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
           {!!sizes.length && <SelectSize sizes={sizes} />}
           {!!colors.length && <SelectColor colors={colors} />}
           <AddToCart product={product} user={user} />
-          <HeartButton user={user} productId={product.id} />
           <Separator className="bg-neutral-400 my-5" />
           <div dangerouslySetInnerHTML={{ __html: product.description }} />
         </div>
@@ -85,7 +87,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
         <Separator />
         <div className="grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {products.map((product) => (
-            <ProductCard product={product} key={product.id} />
+            <ProductCard product={product} key={product.id} user={user} />
           ))}
         </div>
       </div>

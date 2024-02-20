@@ -1,10 +1,11 @@
 "use client";
 import { wishListAction } from "@/actions/wish-list-action";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
-import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
+import { FaHeart } from "react-icons/fa6";
 import { toast } from "sonner";
 
 interface HeartButtonProps {
@@ -23,7 +24,9 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
     [productId, wishList]
   );
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (!user) {
       return router.push(`/sign-in?redirect_url=${pathname}`);
     }
@@ -53,16 +56,17 @@ export const HeartButton = ({ user, productId }: HeartButtonProps) => {
     }
   };
 
-  const HeartIcon = hasWishList ? TiHeartFullOutline : TiHeartOutline;
-
   return (
     <Button
       onClick={handleClick}
       variant="outline"
-      className="text-muted-foreground hover:text-rose-500 mt-5"
+      size="icon"
+      className={cn(
+        "text-muted-foreground rounded-full text-gray-300 hover:text-gray-300/90 absolute top-1 right-1",
+        hasWishList && "text-rose-500 hover:text-rose-500/90"
+      )}
     >
-      <HeartIcon className="h-5 w-5 text-rose-500 mr-3" />
-      <p className="">{hasWishList ? "Wishlist added" : "Add to wishlist"}</p>
+      <FaHeart className="h-5 w-5" />
     </Button>
   );
 };

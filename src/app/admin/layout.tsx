@@ -1,9 +1,8 @@
 import { currentUser } from "@/lib/current-user";
 import { notFound } from "next/navigation";
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
-import { Loader } from "@/components/loader";
 
 export default async function AdminLayout({
   children,
@@ -17,16 +16,12 @@ export default async function AdminLayout({
   }
 
   return (
-    <>
+    <div className="flex h-full">
       <Sidebar />
-      <div className="space-y-5 h-full">
+      <div className="h-full flex flex-col gap-4 w-full">
         <Navbar />
-        <div className="px-5 md:pl-[280px] h-full">
-          {/* <Suspense fallback={<Loader />}> */}
-          {children}
-          {/* </Suspense> */}
-        </div>
+        <div className="px-5 h-full pt-[76px] md:pt-4 pb-10">{children}</div>
       </div>
-    </>
+    </div>
   );
 }

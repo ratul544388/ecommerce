@@ -1,5 +1,4 @@
-import { DynamicBluredImage } from "@/components/dynamic-blured-image";
-import { StaticBluredImage } from "@/components/static-blured-photo";
+import { Photo } from "@/components/photo";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -31,8 +30,8 @@ export const NewArrival = async ({}: NewArrivalProps) => {
             key={item.id}
             className="relative"
           >
-            <DynamicBluredImage
-              image={item.photos[0]}
+            <Photo
+              photo={item.photos[0]}
               alt={item.name}
               className="max-w-full"
             />

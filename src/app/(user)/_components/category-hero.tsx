@@ -1,4 +1,5 @@
 import { DynamicBluredImage } from "@/components/dynamic-blured-image";
+import { Photo } from "@/components/photo";
 import { db } from "@/lib/db";
 import Link from "next/link";
 
@@ -24,7 +25,7 @@ export const CategoryHero = async ({
         href={`/shop?filters=${categories.join("+")}`}
         className="col-span-2 row-span-2"
       >
-        <DynamicBluredImage image={image} alt="Cateogry Hero" />
+        <Photo photo={image} alt="Cateogry Hero" />
       </Link>
       {products.map((product) => (
         <Link
@@ -32,8 +33,8 @@ export const CategoryHero = async ({
           key={product.id}
           className="relative"
         >
-          <DynamicBluredImage
-            image={product.photos[0]}
+          <Photo
+            photo={product.photos[0]}
             alt="photo"
             className=""
           />

@@ -16,7 +16,7 @@ const ProductsPage = async ({
   const page = Number(searchParams.page) || 1;
   const totalProducts = await db.product.count();
   const take = 10;
-  const products = await getProducts({ page, take });
+  const { products } = await getProducts({ page, take });
   const maxPages = Math.ceil(totalProducts / take);
   return (
     <div className="h-full flex flex-col gap-4">

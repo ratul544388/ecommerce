@@ -6,8 +6,8 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 
 interface EmptyStateProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   actionLabel?: string;
   actionUrl?: string;
   className?: string;

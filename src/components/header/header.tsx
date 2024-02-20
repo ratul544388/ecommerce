@@ -23,7 +23,7 @@ export const Header = async ({ user }: HeaderProps) => {
         <Logo />
       </div>
       <HeaderCategories categories={categories} />
-      <Search className="hidden md:block"/>
+      <Search className="hidden md:block" />
       <MobileSearch />
       <div className="flex items-center gap-3">
         {!user && <AuthButtons />}

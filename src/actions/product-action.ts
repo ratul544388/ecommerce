@@ -12,6 +12,7 @@ export const getProducts = async ({
   q,
   productId,
   categories,
+  wishList,
 }: {
   filters?: string[];
   take?: number;
@@ -19,45 +20,36 @@ export const getProducts = async ({
   q?: string;
   productId?: string;
   categories?: string[];
+  wishList?: string[];
 } = {}) => {
   const skip = (page - 1) * take;
+
+  const query: any = {
+    ...(productId ? { id: { not: productId } } : {}),
+    ...(wishList ? { id: { in: wishList } } : {}),
+    ...(categories ? { categories: { hasSome: categories } } : {}),
+    ...(filters?.length ? { categories: { hasSome: filters } } : {}),
+    ...(q ? { name: { contains: q, mode: "insensitive" } } : {}),
+  };
+
+  const total = await db.product.count({
+    where: query,
+  });
+  const hasMore = page * take < total;
+
   const products = await db.product.findMany({
-    include: {
-      variants: true,
-    },
-    where: {
-      ...(productId ? { id: { not: productId } } : {}),
-      ...(categories
-        ? {
-            categories: {
-              hasSome: categories,
-            },
-          }
-        : {}),
-      ...(filters?.length
-        ? {
-            categories: {
-              hasSome: filters,
-            },
-          }
-        : {}),
-      ...(q
-        ? {
-            name: {
-              contains: q,
-              mode: "insensitive",
-            },
-          }
-        : {}),
-    },
+    where: query,
     orderBy: {
       createdAt: "desc",
+    },
+    include: {
+      variants: true,
     },
     take,
     skip,
   });
 
-  return products;
+  return { products, hasMore };
 };
 
 export const createProduct = async (values: z.infer<typeof ProductSchema>) => {

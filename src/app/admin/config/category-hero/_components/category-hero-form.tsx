@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { createHeroCategory } from "@/actions/category-hero-action";
-import { CategorySelect } from "@/app/admin/_components/category-select";
-import { ImageUpload } from "@/app/admin/products/_components/image-upload";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +20,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useTransition } from "react";
 import { toast } from "sonner";
 import { Edit, Trash2 } from "lucide-react";
+import { ImageUpload } from "../../../products/_components/image-upload";
+import { CategorySelect } from "../../../_components/category-select";
 
 interface CategoryHeroFormProps {
   categories: string[];

@@ -43,8 +43,8 @@ export const Search = ({
     const fetchProducts = async () => {
       startTransition(() => {
         getProducts({ q: debounceValue, take: 5 })
-          .then((res) => {
-            setProducts(res);
+          .then(({products}) => {
+            setProducts(products);
           })
           .catch(() => {
             toast.error("Something went wrong");

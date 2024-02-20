@@ -11,6 +11,8 @@ import { useProductSelectionStore } from "@/hooks/use-product-selection-store";
 import { UserWithCart } from "@/types";
 import { Product, Variant } from "@prisma/client";
 import { Minus, Plus } from "lucide-react";
+import { RouteMatcher } from "next/dist/server/future/route-matchers/route-matcher";
+import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { uuid } from "uuidv4";
@@ -23,6 +25,8 @@ interface AddToCartProps {
 }
 
 export const AddToCart = ({ product, user }: AddToCartProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const { setCart, addToCart, cart, updateCart } = useCartStore();
   const [_, startTransition] = useTransition();
   const { size, color, quantity, setQuantity, error, setError } =
@@ -42,6 +46,9 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
     }) || null;
 
   const handleAddToCart = () => {
+    if (!user) {
+      return router.push(`/sign-in/redirect_url=${pathname}`);
+    }
     const hasSize = variants.some((variant) => variant.size);
     const hasColor = variants.some((variant) => variant.color);
 
@@ -52,6 +59,7 @@ export const AddToCart = ({ product, user }: AddToCartProps) => {
     if (!variant && (hasSize || hasColor)) {
       return setError("Stock out");
     }
+    setQuantity(1);
     setError("");
     const cartId = uuid();
     const previousCart = cart;

@@ -1,7 +1,6 @@
 "use client";
 
 import { Photo } from "@/components/photo";
-import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { Color, Size, Variant } from "@prisma/client";
 import { Edit, Trash, Trash2 } from "lucide-react";

@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
@@ -85,6 +86,7 @@ export async function POST(req: Request) {
       },
     });
   }
+
 
   return new Response("", { status: 200 });
 }
