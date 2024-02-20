@@ -14,7 +14,7 @@ const Page = async ({
 }) => {
   const filters = searchParams.filters?.split(" ") || [];
   const page = Number(searchParams.page) || 1;
-  const take = 3;
+  const take = 12;
   const products = await getProducts({ filters, take, page });
   const categories = await db.category.findMany();
 
