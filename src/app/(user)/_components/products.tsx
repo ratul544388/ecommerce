@@ -4,10 +4,10 @@ import { getProducts } from "@/actions/product-action";
 import { EmptyState } from "@/components/empty-state";
 import { Loader } from "@/components/loader";
 import { Product, User } from "@prisma/client";
-import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { ProductCard } from "./product-card";
-import { useSearchParams } from "next/navigation";
 
 interface ProductsProps {
   initialProducts: Product[];
@@ -22,7 +22,6 @@ export const Products = ({
   user,
   wishList,
 }: ProductsProps) => {
-  const initialRender = useRef(true);
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [hasMore, setHasMore] = useState(initialHasMore);

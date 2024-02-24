@@ -31,7 +31,7 @@ export const Header = async ({ user }: HeaderProps) => {
           <>
             <WishListButton />
             <CartTrigger />
-            <UserButton className="hidden sm:block" user={user} />
+            <UserButton />
           </>
         )}
       </div>

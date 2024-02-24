@@ -1,59 +1,52 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useClerk } from "@clerk/nextjs";
+import { useAuth, useClerk, useUser } from "@clerk/nextjs";
 import { User } from "@prisma/client";
 import { Heart, ListOrdered, LogOut, User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { UserAvatar } from "./user-avatar";
 
-export const UserButton = ({
-  user,
-  className,
-  align = "end",
-}: {
-  user: User;
-  className?: string;
-  align?: "start" | "end";
-}) => {
+export const UserButton = ({ align = "end" }: { align?: "start" | "end" }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const { signOut } = useClerk();
+  const { user, isLoaded, isSignedIn } = useUser();
 
-  const options = user.isAdmin
-    ? [
-        {
-          label: "Log out",
-          onClick: () => signOut(() => router.push("/")),
-          icon: LogOut,
-        },
-      ]
-    : [
-        {
-          label: "Profile",
-          onClick: () => router.push("/profile"),
-          icon: User2,
-        },
-        {
-          label: "Wishlist",
-          onClick: () => router.push("/wishlist"),
-          icon: Heart,
-          className: "sm:hidden",
-        },
-        {
-          label: "My Orders",
-          onClick: () => router.push("/my-orders"),
-          icon: ListOrdered,
-        },
-        {
-          label: "Log out",
-          onClick: () => signOut(() => router.push("/")),
-          icon: LogOut,
-        },
-      ];
+  const options = [
+    {
+      label: "Profile",
+      onClick: () => router.push("/profile"),
+      icon: User2,
+    },
+    {
+      label: "Wishlist",
+      onClick: () => router.push("/wishlist"),
+      icon: Heart,
+      className: "sm:hidden",
+    },
+    {
+      label: "My Orders",
+      onClick: () => router.push("/my-orders"),
+      icon: ListOrdered,
+    },
+    {
+      label: "Log out",
+      onClick: () => signOut(() => router.push("/")),
+      icon: LogOut,
+    },
+  ];
+
+  if (!isSignedIn) {
+    return null;
+  }
+
+  if (isSignedIn && !isLoaded) {
+    return "Loading...";
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -63,7 +56,7 @@ export const UserButton = ({
           size="icon"
           className="h-10 w-10 hover:shadow-sm rounded-full"
         >
-          <UserAvatar src={user.imageUrl} alt={user.name} />
+          <UserAvatar src={user.imageUrl} alt={user.fullName as string} />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -73,12 +66,12 @@ export const UserButton = ({
         <div className="flex items-center gap-3 px-5">
           <UserAvatar
             src={user.imageUrl}
-            alt={user.name}
+            alt={user.fullName as string}
             className="h-12 w-12"
           />
           <div className="">
-            <h4 className="font-medium leading-4">{user.name}</h4>
-            <span className="line-clamp-1">{user.email}</span>
+            <h4 className="font-medium leading-4">{user.fullName}</h4>
+            <span className="line-clamp-1">{user.emailAddresses[0].emailAddress}</span>
           </div>
         </div>
         <div className="mt-4">
