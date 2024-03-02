@@ -11,7 +11,7 @@ export const Productcolumns: ColumnDef<Product & { variants: Variant[] }>[] = [
     accessorKey: "photos",
     header: "Photo",
     cell: ({ row }) => {
-      return <Photo photo={row.original.photos[0]} className="max-w-[60px]"/>;
+      return <Photo photo={row.original.photos[0]} className="max-w-[60px]" />;
     },
   },
   {
@@ -32,7 +32,7 @@ export const Productcolumns: ColumnDef<Product & { variants: Variant[] }>[] = [
       const offerPrice = row.original.offerPrice;
       return (
         <p className={cn(!offerPrice && "text-muted-foreground")}>
-          ${offerPrice ? offerPrice : `Not Available`}
+          {offerPrice ? `${offerPrice}` : `Not Available`}
         </p>
       );
     },

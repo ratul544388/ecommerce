@@ -7,8 +7,8 @@ import { MobileSidebarTrigger } from "../mobile-sidebar-trigger";
 import { UserButton } from "../user-button";
 import { WishListButton } from "../wishlist/wish-list-button";
 import { Logo } from "./logo";
-import { Search } from "./search";
 import { MobileSearch } from "./mobile-search";
+import { Search } from "./search";
 
 interface HeaderProps {
   user: User | null;

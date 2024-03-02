@@ -21,7 +21,7 @@ export const ProductsClient = ({ products }: ProductsClientProps) => {
         links={[
           {
             label: "Dashboard",
-            href: "/dashboard",
+            href: "/admin/dashboard",
           },
         ]}
         pageLabel="Product Colors"

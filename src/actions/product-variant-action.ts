@@ -35,6 +35,7 @@ export const createProductVariant = async ({
 
     const existingVariant = await db.variant.findFirst({
       where: {
+        productId,
         size,
         color: {
           equals: color,

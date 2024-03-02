@@ -22,6 +22,9 @@ export async function currentUser() {
           },
           variant: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
       },
     },
   });

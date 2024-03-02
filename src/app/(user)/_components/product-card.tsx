@@ -32,7 +32,9 @@ export const ProductCard = ({ product, user }: ProductCardProps) => {
         <span className="line-through text-muted-foreground font-medium">
           ${price}
         </span>
-        <span className="font-semibold text-foreground">${offerPrice}</span>
+        {offerPrice && (
+          <span className="font-semibold text-foreground">${offerPrice}</span>
+        )}
       </p>
       {discount && (
         <p className="text-green-600 text-xs font-bold mt-1">

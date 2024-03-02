@@ -3,6 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 import qs from "query-string";
+import { SignInButton } from "@clerk/nextjs";
 
 export const AuthButtons = () => {
   const router = useRouter();
@@ -38,6 +39,7 @@ export const AuthButtons = () => {
       >
         Register
       </Button>
+      <SignInButton mode="modal">Test login</SignInButton>
     </div>
   );
 };
