@@ -1,4 +1,5 @@
 import { getProducts } from "@/actions/product-action";
+import { Container } from "@/components/container";
 import { EmptyState } from "@/components/empty-state";
 import { currentUser } from "@/lib/current-user";
 import { Products } from "../_components/products";
@@ -9,7 +10,7 @@ const WishListPage = async () => {
   const { products, hasMore } = await getProducts({ wishList: user?.wishList });
 
   return (
-    <div>
+    <Container>
       {products.length ? (
         <Products
           initialProducts={products}
@@ -25,7 +26,7 @@ const WishListPage = async () => {
           actionUrl="/shop"
         />
       )}
-    </div>
+    </Container>
   );
 };
 

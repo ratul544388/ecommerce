@@ -5,6 +5,8 @@ import { CategoryHero } from "./_components/category-hero";
 import { MainCategories } from "./_components/main-categories";
 import { NewArrival } from "./_components/new-arrival";
 import { Suspense } from "react";
+import { RevealInView } from "@/components/reveal-in-view";
+import { Container } from "@/components/container";
 
 export default async function Home() {
   const categoryHeros = await db.categoryHero.findMany();
@@ -13,9 +15,9 @@ export default async function Home() {
   return (
     <div className="h-full pb-10">
       <Hero />
-      <div className="h-full flex flex-col gap-6 pt-[50vh]">
+      <Container className="flex flex-col w-full items-center gap-6">
         <MainCategories />
-        <div className="max-w-screen-lg mx-auto flex flex-col gap-20">
+        <div className="flex flex-col gap-20">
           <Suspense fallback={fallback}>
             <NewArrival />
           </Suspense>
@@ -26,7 +28,7 @@ export default async function Home() {
           ))}
           <AboutOurCloth />
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

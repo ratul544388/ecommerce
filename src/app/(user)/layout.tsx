@@ -2,6 +2,7 @@ import { Footer } from "@/components/footer";
 import { Header } from "@/components/header/header";
 import { MaxWidthWrapper } from "@/components/max-width-wrapper";
 import { currentUser } from "@/lib/current-user";
+import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -15,12 +16,13 @@ export default async function UserLayout({
   if (user?.isAdmin) {
     redirect("/admin/dashboard");
   }
+
+  const categories = await db.category.findMany();
+
   return (
     <>
-      <Header user={user} />
-      <MaxWidthWrapper className="pt-[90px] pb-[200px] min-h-screen">
-        {children}
-      </MaxWidthWrapper>
+      <Header user={user} categories={categories} />
+      <div className="pb-[200px] min-h-screen">{children}</div>
       <Footer />
     </>
   );

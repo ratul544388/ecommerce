@@ -1,5 +1,6 @@
 import { getProducts } from "@/actions/product-action";
 import { Filters } from "@/components/categories/filters";
+import { Container } from "@/components/container";
 import { EmptyState } from "@/components/empty-state";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { currentUser } from "@/lib/current-user";
@@ -24,7 +25,7 @@ const Page = async ({
           <Filters categories={categories} />
         </ScrollArea>
       </div>
-      <div className="flex flex-col gap-4 md:pl-[250px]">
+      <Container className="flex flex-col gap-4 md:pl-[270px]">
         <div className="flex items-center justify-normal">
           <PageFilters filters={filters} />
         </div>
@@ -42,7 +43,7 @@ const Page = async ({
             actionUrl="/shop"
           />
         )}
-      </div>
+      </Container>
     </>
   );
 };

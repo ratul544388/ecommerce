@@ -1,5 +1,6 @@
 "use client";
 
+import { RevealInView } from "@/components/reveal-in-view";
 import Link from "next/link";
 
 interface MainCategoriesProps {}
@@ -24,7 +25,7 @@ export const MainCategories = ({}: MainCategoriesProps) => {
     },
   ];
   return (
-    <div className="grid grid-cols-4 place-items-center bg-secondary">
+    <div className="mt-5 w-full grid grid-cols-4 place-items-center bg-secondary">
       {categories.map(({ label, href }) => (
         <Link
           href={href}

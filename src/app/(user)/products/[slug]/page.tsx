@@ -1,16 +1,17 @@
 import { getProducts } from "@/actions/product-action";
+import { Container } from "@/components/container";
 import { Separator } from "@/components/ui/separator";
 import { currentUser } from "@/lib/current-user";
 import { db } from "@/lib/db";
 import { cn } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import { ProductCard } from "../../_components/product-card";
 import { AddToCart } from "../_components/add-to-cart";
 import { HeartButton } from "../_components/heart-button";
-import { SelectColor } from "../_components/select-color";
-import { SelectSize } from "../_components/select-size";
 import { PhotoTabs } from "../_components/photo-tabs";
 import { ProductPhoto } from "../_components/product-photo";
-import { ProductCard } from "../../_components/product-card";
+import { SelectColor } from "../_components/select-color";
+import { SelectSize } from "../_components/select-size";
 
 const ProductPage = async ({ params }: { params: { slug: string } }) => {
   const user = await currentUser();
@@ -48,7 +49,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
     .map((item) => item.color);
 
   return (
-    <div className="max-w-[950px] mx-auto w-full space-y-16">
+    <Container className="max-w-[950px] mx-auto w-full space-y-16">
       <div className="grid sm:grid-cols-2 gap-12">
         <div className="flex flex-col gap-5">
           <div className="relative">
@@ -91,7 +92,7 @@ const ProductPage = async ({ params }: { params: { slug: string } }) => {
           ))}
         </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
