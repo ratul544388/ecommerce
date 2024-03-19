@@ -39,7 +39,6 @@ export const AuthButtons = () => {
       >
         Register
       </Button>
-      <SignInButton mode="modal">Test login</SignInButton>
     </div>
   );
 };
