@@ -57,7 +57,7 @@ export const Hero = ({}: HeroProps) => {
               alt="image"
               width={1600}
               height={900}
-              className="min-h-[300px] h-full w-full object-cover"
+              className="h-[350px] w-full object-cover"
               placeholder="blur"
             />
           </CarouselItem>
