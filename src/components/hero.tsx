@@ -13,8 +13,7 @@ import {
 } from "@/components/ui/carousel";
 import { useEmblaCarouselDotButton } from "@/hooks/use-embla-carousel-dot-button";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
-import { Skeleton } from "./ui/skeleton";
+import { useCallback, useState } from "react";
 
 const images = [HeroImage, HeroImage, HeroImage, HeroImage, HeroImage];
 
@@ -24,7 +23,6 @@ interface HeroProps {
 
 export const Hero = ({}: HeroProps) => {
   const [api, setApi] = useState<CarouselApi>();
-  const [mounted, setMounted] = useState(false);
   const { selectedIndex, onDotButtonClick, scrollSnaps } =
     useEmblaCarouselDotButton(api);
 
@@ -34,12 +32,6 @@ export const Hero = ({}: HeroProps) => {
       autoplay.play();
     }
   }, [api]);
-
-  useEffect(() => setMounted(true), []);
-
-  // if (mounted) {
-  //   return <span className="w-screen min-h-[300px] bg-accent" />;
-  // }
 
   return (
     <Carousel
